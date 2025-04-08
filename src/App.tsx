@@ -1,5 +1,8 @@
 import { useRoutes } from "react-router-dom";
 import { routes } from "./route";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const element = useRoutes(routes);
@@ -7,12 +10,13 @@ const AppRoutes = () => {
 };
 
 function App() {
-
   return (
-  <div>
-    <AppRoutes />
-  </div>
-  )
+    <div>
+      <QueryClientProvider client={queryClient}>
+        <AppRoutes />
+      </QueryClientProvider>
+    </div>
+  );
 }
 
-export default App
+export default App;
