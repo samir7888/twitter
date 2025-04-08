@@ -1,3 +1,4 @@
+import { Posts } from "@/components/home/posts";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 // import { useAuth } from "@/context/AuthProvider";
@@ -120,7 +121,7 @@ const username = localStorage.getItem("username") || user?.username || "User";
       {/* posts */}
       <div>
      
-
+          <Posts />
       </div>
     </div>
   );

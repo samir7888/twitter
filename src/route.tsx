@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import AuthLayout from "./components/layout/AuthLayout";
 import HomeLayout from "./components/layout/HomeLayout";
 import Me from "./pages/Me";
+import Persist from "./lib/Persist";
 
 export const routes = [
   {
@@ -26,12 +27,20 @@ export const routes = [
   },
   {
     path: "/:username",
-    element: <HomeLayout />,
+    element: (
+      <Persist>
+        <HomeLayout />
+      </Persist>
+    ),
     children: [{ path: "/:username", element: <Me /> }],
   },
   {
     path: "/settings/profile",
-    element: <HomeLayout />,
+    element: (
+      <Persist>
+        <HomeLayout />
+      </Persist>
+    ),
     children: [{ path: "/settings/profile", element: <Me /> }],
   },
 ];

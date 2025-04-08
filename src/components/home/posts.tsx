@@ -1,9 +1,15 @@
+import { useGetPosts } from '@/hooks/getAllPosts';
 import React from 'react'
 
-const posts = () => {
+export const Posts = () => {
+
+  const {data,isPending} = useGetPosts();
+  console.log(data)
   return (
-    <div>posts</div>
+    <>
+      {isPending && <div>Loading...</div>}
+      <div>data</div>
+    </>
   )
 }
 
-export default posts

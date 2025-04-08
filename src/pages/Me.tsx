@@ -72,11 +72,11 @@ const Me = () => {
         </div>
         
         <div className="flex justify-between px-4 relative">
-          <div className="absolute -top-16 border-4 border-white dark:border-black rounded-full">
+          <div className="absolute  -top-16 border-4 border-white dark:border-black rounded-full">
             <img
               src={"https://avatar.iran.liara.run/public"}
               alt="profile"
-              className="w-32 h-32 rounded-full object-cover"
+              className="max-w-32 max-h-32 rounded-full object-cover"
             />
           </div>
           
@@ -179,6 +179,7 @@ const Me = () => {
       {isOpen && <ProfileEditModal 
         isOpen={isOpen} 
         setIsOpen={handleModalClose}
+        initialValues={data}
         
       />}
     </div>

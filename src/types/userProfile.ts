@@ -15,7 +15,7 @@ interface FileInfo {
   }
   
   // User profile interface
-  interface UserProfile {
+  export interface UserProfile {
     _id: string;
     __v: number;
     account: UserAccount;

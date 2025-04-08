@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { useGetMyProfile, useUpdateMyProfile } from '@/hooks/useUpdateProfile';
+import { UserProfile } from '@/types/userProfile';
 
-export default function ProfileEditModal({ isOpen, setIsOpen }:{isOpen: boolean, setIsOpen: (isOpen: boolean) => void}) {
+export default function ProfileEditModal({ isOpen, setIsOpen,initialValues }:{isOpen: boolean, setIsOpen: (isOpen: boolean) => void,initialValues:UserProfile}) {
+  const { mutate, isPending, isError, error, isSuccess } = useUpdateMyProfile();
   // Use provided initial data or fallback to empty values
   const [formData, setFormData] = useState<FormData>({
-      firstName:  '',
-      lastName:  '',
-      bio:  '',
-      dob:  '',
-      location:  '',
-      phoneNumber:  '',
-      countryCode:  '+1'
+      firstName:  initialValues.firstName || '',
+      lastName:  initialValues.lastName || '',
+      bio:  initialValues.bio || '',
+      dob: initialValues.dob || '',
+      location:  initialValues.location || '',
+      phoneNumber:  initialValues.phoneNumber || '',
+      countryCode:  initialValues.countryCode || '+1'
+ 
   });
   const countryCodes = [
     { code: '+1', name: 'United States (+1)' },
@@ -31,16 +35,19 @@ interface FormData {
     countryCode: string;
 }
 
+ 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-        ...prev,
-        [name]: value
-    }));
+  const { name, value } = e.target;
+  setFormData(prev => ({
+    ...prev,
+    [name]: value
+  }));
 };
 
 const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  e.preventDefault();
+  // useUpdateMyProfile({formData});
+    mutate({ params: formData });
     console.log('Profile data submitted:', formData);
     setIsOpen(false);
 };
