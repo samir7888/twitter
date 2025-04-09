@@ -1,4 +1,4 @@
-interface IAVATAR {
+interface IAvatar {
     _id: string;
     localPath: string;
     url: string;
@@ -12,7 +12,7 @@ enum USER_ROLE {
 export type USER = {
     _id: string;
     username: string;
-    avatar: IAVATAR;
+    avatar: IAvatar;
     login: string;
     role: USER_ROLE;
     email: string;

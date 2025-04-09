@@ -1,29 +1,29 @@
-export interface Avatar {
+export interface IAvatar {
     _id: string;
     localPath: string;
     url: string;
-  }
-  
-  export interface Account {
+}
+
+export interface IAccount {
     _id: string;
-    avatar: Avatar;
+    avatar: IAvatar;
     email: string;
     username: string;
-  }
-  
-  export interface CoverImage {
+}
+
+export interface ICoverImage {
     _id: string;
     localPath: string;
     url: string;
-  }
-  
-  export interface Author {
+}
+
+export interface IAuthor {
     __v: number;
     _id: string;
-    account: Account;
+    account: IAccount;
     bio: string;
     countryCode: string;
-    coverImage: CoverImage;
+    coverImage: ICoverImage;
     createdAt: string;
     dob: string;
     firstName: string;
@@ -32,34 +32,33 @@ export interface Avatar {
     owner: string;
     phoneNumber: string;
     updatedAt: string;
-  }
-  
-  export interface PostImage {
+}
+
+export interface IPostImage {
     _id: string;
     localPath: string;
     url: string;
-  }
-  
-  export interface Post {
+}
+
+export interface Post {
     __v: number;
     _id: string;
-    author: Author;
+    author: IAuthor;
     comments: number;
     content: string;
     createdAt: string;
-    images: PostImage[];
-  }
-  
-  export interface PostsResponse {
+    images: IPostImage[];
+}
+
+export interface IPostsResponse {
     hasNextPage: boolean;
     hasPrevPage: boolean;
     limit: number;
     nextPage: number;
     page: number;
     posts: Post[];
-  }
-  
-  export interface PostsApiResponse {
-    data: PostsResponse;
-  }
-  
+}
+
+export interface IPostsApiResponse {
+    data: IPostsResponse;
+}
