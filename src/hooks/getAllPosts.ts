@@ -6,7 +6,7 @@ import useAxiosAuth from './useAuth';
 export const useGetPosts = () => {
     const axiosInstance = useAxiosAuth();
     return useQuery({
-        queryKey: ['posts'],
+        queryKey: ['getAllPosts'],
         queryFn: async () => {
             try {
                 const res = await axiosInstance.get(`/social-media/posts`);
@@ -20,5 +20,6 @@ export const useGetPosts = () => {
                 throw error;
             }
         },
+        staleTime: 0
     });
 };

@@ -15,15 +15,20 @@ export const routes = [
       </AuthGuard>
     ),
     children: [
-      { path: "/", element: <LoginPage /> },
-      { path: "/login", element: <LoginPage /> },
-      // Use a parameter instead of hardcoded username
+      { index: true, element: <LoginPage /> },
+      { path: "login", element: <LoginPage /> },
     ],
   },
   {
     path: "/home",
-    element: <HomeLayout />,
-    children: [{ path: "/home", element: <Home /> }],
+    element: (
+      <Persist>
+        <HomeLayout />
+      </Persist>
+    ),
+    children: [
+      { index: true, element: <Home /> }
+    ],
   },
   {
     path: "/:username",
@@ -32,15 +37,19 @@ export const routes = [
         <HomeLayout />
       </Persist>
     ),
-    children: [{ path: "/:username", element: <Me /> }],
+    children: [
+      { index: true, element: <Me /> }
+    ],
   },
   {
-    path: "/settings/profile",
+    path: "/settings",
     element: (
       <Persist>
         <HomeLayout />
       </Persist>
     ),
-    children: [{ path: "/settings/profile", element: <Me /> }],
+    children: [
+      { path: "profile", element: <Me /> }
+    ],
   },
 ];
