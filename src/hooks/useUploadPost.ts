@@ -19,8 +19,7 @@ export const useUploadPost = () => {
 
       return res.data.data
     },
-    onSuccess: () => {
-        alert("sucesssfully uploaded")
+    onSettled: () => {
         // 🚀 Invalidate and refetch all posts after successful upload
         queryClient.invalidateQueries({ queryKey: ['getAllPosts'] })
       },

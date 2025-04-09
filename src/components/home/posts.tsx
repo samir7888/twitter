@@ -1,3 +1,4 @@
+import { useAuth } from '@/context/AuthProvider';
 import { useGetPosts } from '@/hooks/getAllPosts';
 import { Heart, MessageCircle, Bookmark, Share2 } from 'lucide-react';
 import React from 'react';
@@ -14,7 +15,6 @@ console.log(posts)
       </div>
     );
   }
-
   return (
     <div className="flex flex-col divide-y divide-gray-200">
       {posts.length === 0 ? (
@@ -29,9 +29,12 @@ console.log(posts)
 };
 
 const PostCard = ({ post }) => {
+  const username = localStorage.getItem("username")  || "User";
+
+  const {user}= useAuth();
   const { 
     content, 
-    author, 
+     
     createdAt, 
     likes, 
     comments, 
@@ -52,8 +55,8 @@ const PostCard = ({ post }) => {
         {/* Avatar */}
         <div className="flex-shrink-0">
           <img 
-            src={author.account.avatar.url} 
-            alt={`${author.firstName} ${author.lastName}`}
+            src={'https://avatar.iran.liara.run/public'} 
+            alt={`${user?.firstName} ${user?.lastName}`}
             className="h-12 w-12 rounded-full"
           />
         </div>
@@ -62,8 +65,8 @@ const PostCard = ({ post }) => {
         <div className="flex-1 min-w-0">
           {/* Author info */}
           <div className="flex items-center mb-1">
-            <span className="font-bold text-white-900">{author.firstName} {author.lastName}</span>
-            <span className="ml-1 text-gray-400">@{author.account.username}</span>
+            <span className="font-bold text-white-900">{user?.firstName} {user?.lastName}</span>
+            <span className="ml-1 text-gray-400">@{username}</span>
             <span className="mx-1 text-gray-500">·</span>
             <span className="text-gray-500 text-sm">{formattedDate}</span>
           </div>

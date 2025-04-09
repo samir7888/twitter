@@ -86,14 +86,13 @@ const Home = () => {
       setTweet("");
       setImages([]);
       setTags([]);
-      alert("Post submitted successfully!");
     } catch (error) {
       console.error("Error uploading post:", error);
       alert("Failed to upload post. Please try again.");
     }
   };
 
-  const username = localStorage.getItem("username") || user?.username || "User";
+  const username = localStorage.getItem("username")  || "User";
 
   return (
     <div className="border-b border-gray-200 dark:border-gray-800">
