@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import { useGetMyProfile, useUpdateMyProfile } from '@/hooks/useUpdateProfile';
+import {  useUpdateMyProfile } from '@/hooks/useUpdateProfile';
 import { UserProfile } from '@/types/userProfile';
 
 export default function ProfileEditModal({ isOpen, setIsOpen,initialValues }:{isOpen: boolean, setIsOpen: (isOpen: boolean) => void,initialValues:UserProfile}) {
   const { mutate, isPending, isError, error, isSuccess } = useUpdateMyProfile();
   // Use provided initial data or fallback to empty values
   const [formData, setFormData] = useState<FormData>({
-      firstName:  initialValues.firstName || '',
-      lastName:  initialValues.lastName || '',
-      bio:  initialValues.bio || '',
-      dob: initialValues.dob || '',
+      firstName:  initialValues?.firstName || '',
+      lastName:  initialValues?.lastName || '',
+      bio:  initialValues?.bio || '',
+      dob: initialValues?.dob || '',
       location:  initialValues.location || '',
-      phoneNumber:  initialValues.phoneNumber || '',
-      countryCode:  initialValues.countryCode || '+1'
+      phoneNumber:  initialValues?.phoneNumber || '',
+      countryCode:  initialValues?.countryCode || '+1'
  
   });
   const countryCodes = [
@@ -54,7 +54,13 @@ const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
 
   // If the modal is not open, don't render anything
   if (!isOpen) return null;
-
+  if (isPending) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 font-sans">
       {/* Semi-transparent background */}

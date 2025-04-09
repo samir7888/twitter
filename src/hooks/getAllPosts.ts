@@ -1,6 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuth from './useAuth';
+import { PostsApiResponse } from '@/types/post';
  
 
 export const useGetPosts = () => {
@@ -9,7 +10,7 @@ export const useGetPosts = () => {
         queryKey: ['getAllPosts'],
         queryFn: async () => {
             try {
-                const res = await axiosInstance.get(`/social-media/posts`);
+                const res = await axiosInstance.get<PostsApiResponse>(`/social-media/posts`);
                 if (res.status !== 200) {
                     throw new Error('Network response was not ok');
                 }

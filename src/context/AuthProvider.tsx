@@ -24,14 +24,21 @@ export function AuthProvider({children}:{children: React.ReactNode}) {
     )
 };
 
-
+  
+interface ICurrentUser{
+    _id: string;
+    username: string;
+    role: string;
+    iat: number;
+    exp: number;
+}
 export function useAuth() {
     const context = useContext(AuthContext);
     if (context === undefined) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     const accessToken = context.accessToken;
-    const currentUser = accessToken ? (jwtDecode(accessToken) ) : null;
+    const currentUser = accessToken ? (jwtDecode(accessToken) as ICurrentUser ) : null;
     return {
         ...context,
         currentUser,};

@@ -19,11 +19,11 @@ interface FileInfo {
     _id: string;
     __v: number;
     account: UserAccount;
-    bio: string;
-    countryCode: string;
-    coverImage: FileInfo;
+    bio?: string;
+    countryCode?: string;
+    coverImage?: FileInfo;
     createdAt: string; // ISO date string
-    dob: string; // ISO date string
+    dob?: string; // ISO date string
     firstName: string;
     followersCount: number;
     followingCount: number;

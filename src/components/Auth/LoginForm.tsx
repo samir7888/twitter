@@ -1,45 +1,47 @@
-import React from "react"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import axios from "axios"
-import { BASEURL } from "@/lib/constant"
-import { useAuth } from "@/context/AuthProvider"
-import { useNavigate } from "react-router-dom"
+import React from "react";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { BASEURL } from "@/lib/constant";
+import { useAuth } from "@/context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
-  const [username, setUsername] = React.useState("doejohn")
-  const [password, setPassword] = React.useState("test@123")
-  const [error, setError] = React.useState("")
-  const [loading, setLoading] = React.useState(false)
-  const {setAccessToken,setRefreshToken,setUser} = useAuth()
+  const [username, setUsername] = React.useState("doejohn");
+  const [password, setPassword] = React.useState("test@123");
+  const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [rememberMe, setRememberMe] = React.useState<boolean>(false);
+  const { setAccessToken, setRefreshToken, setUser } = useAuth();
   const navigate = useNavigate();
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       const res = await axios.post(`${BASEURL}/users/login`, {
         username,
         password,
-      })
-     
-      setAccessToken(res.data.data.accessToken)
-      setRefreshToken(res.data.data.refreshToken)
-      setUser(res.data.data.user)
-     
+      });
 
-      navigate("/home", { replace: true }) 
+      setAccessToken(res.data.data.accessToken);
+      setRefreshToken(res.data.data.refreshToken);
+      setUser(res.data.data.user);
+
+      navigate("/home", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Error during login:", error.response?.data?.message)
-        setError(error.response?.data?.message || "Invalid username or password")
+        console.error("Error during login:", error.response?.data?.message);
+        setError(
+          error.response?.data?.message || "Invalid username or password"
+        );
       } else {
-        console.error("Unexpected error:", error)
-        setError("Something went wrong. Please try again.")
+        console.error("Unexpected error:", error);
+        setError("Something went wrong. Please try again.");
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -48,7 +50,7 @@ const LoginForm = () => {
       <h1 className="text-3xl mb-4 font-bold">Happening now</h1>
       <h3>Join today.</h3>
 
-      <div className="m-4 p-3">
+      <div className=" p-3 w-full">
         <Button className="bg-white text-gray-600 p-2 rounded-full">
           Login with Google
         </Button>
@@ -92,9 +94,16 @@ const LoginForm = () => {
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </form>
+        <div className="flex  items-center justify-center text-center mt-4">
+          <Input onChange={()=>{
+            setRememberMe(!rememberMe);
+            localStorage.setItem("rememberMe", !rememberMe ? "true" : "false");
+          }}  type="checkbox" className=" mt-4 w-12" />
+          <span className="text-xl  text-white">Remember me</span>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

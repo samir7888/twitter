@@ -2,6 +2,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { useGetPosts } from '@/hooks/getAllPosts';
 import { Heart, MessageCircle, Bookmark, Share2 } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Posts = () => {
   const { data, isPending } = useGetPosts();
@@ -48,12 +49,12 @@ const PostCard = ({ post }) => {
     month: 'short',
     day: 'numeric'
   });
-
+const navigate = useNavigate()
   return (
     <div className="p-4 text-white">
       <div className="flex space-x-3">
         {/* Avatar */}
-        <div className="flex-shrink-0">
+        <div onClick={()=>navigate(`/${username}`)} className="flex-shrink-0">
           <img 
             src={'https://avatar.iran.liara.run/public'} 
             alt={`${user?.firstName} ${user?.lastName}`}

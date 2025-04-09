@@ -9,13 +9,13 @@ interface AuthGuardProps {
 }
 
 export const AuthGuard = ({ children }: AuthGuardProps): JSX.Element => {
-const {user,accessToken} = useAuth();
+const {currentUser,accessToken} = useAuth();
   const navigate = useNavigate();
 
   if (!accessToken) {
     navigate("/login", { replace: true }); // Redirect to login page if not authenticated
     return <LoginPage />; // Redirect to login page if not authenticated
   }
-  localStorage.setItem("username", user?.username || "");
+  localStorage.setItem("username", currentUser?.username || "");
   return <>{children}</>;
 };

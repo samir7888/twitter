@@ -22,13 +22,13 @@ export const routes = [
   {
     path: "/home",
     element: (
-      <Persist>
-        <HomeLayout />
-      </Persist>
+      <AuthGuard>
+        <Persist>
+          <HomeLayout />
+        </Persist>
+      </AuthGuard>
     ),
-    children: [
-      { index: true, element: <Home /> }
-    ],
+    children: [{ index: true, element: <Home /> }],
   },
   {
     path: "/:username",
@@ -37,19 +37,17 @@ export const routes = [
         <HomeLayout />
       </Persist>
     ),
-    children: [
-      { index: true, element: <Me /> }
-    ],
+    children: [{ index: true, element: <Me /> }],
   },
   {
     path: "/settings",
     element: (
-      <Persist>
-        <HomeLayout />
-      </Persist>
+      <AuthGuard>
+        <Persist>
+          <HomeLayout />
+        </Persist>
+      </AuthGuard>
     ),
-    children: [
-      { path: "profile", element: <Me /> }
-    ],
+    children: [{ path: "profile", element: <Me /> }],
   },
 ];

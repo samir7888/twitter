@@ -1,38 +1,50 @@
 import { useAuth } from '@/context/AuthProvider'
-import useAxiosAuth from '@/hooks/useAuth';
-import React, {  useEffect, useState } from 'react'
+import useAxiosAuth from '@/hooks/useAuth'
+import React, { useEffect, useState } from 'react'
 
-const Persist = ({children}:{children:React.ReactNode}) => {
-    const axiosInstance = useAxiosAuth();
-    const [loading,setLoading] = useState(false);
-    const {accessToken,setAccessToken}= useAuth();
-    useEffect(() => {
-        const refreshAuth= async()=>{
+interface Props {
+  children: React.ReactNode
+}
 
-            try {
-                setLoading(true);
-                const res = await axiosInstance.post('/users/refresh', {}, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
-                });
-                setAccessToken(res.data.accessToken);
-            } catch (error) {
-                console.log(error);
+const Persist: React.FC<Props> = ({ children }) => {
+  const axiosInstance = useAxiosAuth()
+  const [loading, setLoading] = useState(true) // default true so we wait for token check
+  const { accessToken, setAccessToken, refreshToken } = useAuth()
+const rememberMe = localStorage.getItem('rememberMe') === 'true' || false; 
 
-            }finally{
-                setLoading(false);
-            }
-        }
-        if (!accessToken) {
-            
-            refreshAuth();
-        }
-    },[])
-    if (loading) {
-        return <div>loading...</div>
+  useEffect(() => {
+
+    const refreshAuth = async () => {
+      try {
+        const res = await axiosInstance.post(
+          '/users/refresh',
+          {},
+          {
+            withCredentials: true,
+          }
+        )
+
+        setAccessToken(res.data.accessToken)
+      } catch (error) {
+        console.error('Error refreshing token:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  return children;
+
+    if (rememberMe && !accessToken && refreshToken) {
+      refreshAuth()
+    } else {
+      setLoading(false) // no refresh needed
+   
+    }
+  }, [accessToken, refreshToken, setAccessToken, axiosInstance,rememberMe])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  return <>{children}</>
 }
 
 export default Persist

@@ -17,7 +17,7 @@ export const useUploadPost = () => {
         throw new Error('Network response was not ok')
       }
 
-      return res.data.data
+      return res.data.data;
     },
     onSettled: () => {
         // 🚀 Invalidate and refetch all posts after successful upload
