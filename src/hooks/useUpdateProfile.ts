@@ -9,12 +9,14 @@ type UserProfile = {
   }
   
 
-import { useMutation } from '@tanstack/react-query'
+import {  useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosAuth from './useAuth';
 import { UserProfileApiResponse } from '@/types/userProfile';
 
 
 export const useUpdateMyProfile = () => {
+    
+  const queryClient = useQueryClient()
     const axiosInstance = useAxiosAuth();
     return useMutation({
         mutationKey: ['myProfile'],
@@ -25,6 +27,13 @@ export const useUpdateMyProfile = () => {
             }
             console.log(res.data)
             return res.data.data;
-        }
-    })
+        },
+        onSettled: () => {
+            // 🚀 Invalidate and refetch all posts after successful upload
+            queryClient.invalidateQueries({ queryKey: ['myProfile'] })
+          },
+    },
+    
+)
+
 }

@@ -5,6 +5,7 @@ import AuthLayout from "./components/layout/AuthLayout";
 import HomeLayout from "./components/layout/HomeLayout";
 import Me from "./pages/Me";
 import Persist from "./lib/Persist";
+import { RegisterPage } from "./pages/RegisterPage";
 
 export const routes = [
   {
@@ -19,6 +20,8 @@ export const routes = [
       { path: "login", element: <LoginPage /> },
     ],
   },
+  { path: "signup", element: <RegisterPage /> },
+
   {
     path: "/home",
     element: (

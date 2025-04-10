@@ -5,14 +5,16 @@ import axios from "axios";
 import { BASEURL } from "@/lib/constant";
 import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { UserApiResponse } from "@/types/user";
 
-const LoginForm = () => {
+export const RegisterForm = () => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [role] = React.useState("ADMIN");
+  const [email, setEmail] = React.useState("");
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [rememberMe, setRememberMe] = React.useState<boolean>(false);
-  const { setAccessToken, setRefreshToken, setUser } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,19 +22,27 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const res = await axios.post(`${BASEURL}/users/login`, {
-        username,
-        password,
-      });
+      const res = await axios.post<UserApiResponse>(
+        `${BASEURL}/users/register`,
+        {
+          email,
+          password,
+          role,
 
-      setAccessToken(res.data.data.accessToken);
-      setRefreshToken(res.data.data.refreshToken);
-      setUser(res.data.data.user);
+          username,
+        }
+      );
 
-      navigate("/home", { replace: true });
+      console.log(res.data.data);
+      setUser(res.data.data);
+
+      navigate("/login", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Error during login:", error.response?.data?.message);
+        console.error(
+          "Error during register user:",
+          error.response?.data?.message
+        );
         setError(
           error.response?.data?.message || "Invalid username or password"
         );
@@ -51,24 +61,17 @@ const LoginForm = () => {
       <h3>Join today.</h3>
 
       <div className=" p-3 w-full">
-        <Button className="bg-white text-gray-600 p-2 rounded-full">
-          Login with Google
-        </Button>
-
-        <br />
-        <br />
-
-        <Button className="bg-white text-black p-2 rounded-full hover:text-white">
-          Login with Github
-        </Button>
-
-        <div className="flex items-center justify-center text-center mt-2">
-          <div className="h-[1px] w-full bg-white" />
-          <span className="m-1">or</span>
-          <div className="h-[1px] w-full bg-white" />
-        </div>
-
         <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit}>
+          <Input
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            size={10}
+            type="email"
+            placeholder="Email"
+            className="p-2 border border-gray-300 rounded"
+            required
+          />
+       
           <Input
             onChange={(e) => setUsername(e.target.value)}
             value={username}
@@ -83,28 +86,27 @@ const LoginForm = () => {
             type="password"
             placeholder="Password"
             className="p-2 border border-gray-300 rounded"
+            required
           />
+           <select className="bg-black text-white" value={role}>
+            <option value="ADMIN">Admin</option>
+            <option value="USER">User</option>
+            <option value="MODERATOR">Moderator</option>
+            <option value="GUEST">Guest</option>
+          </select>
+
           <Button
             type="submit"
             disabled={loading}
             className="bg-blue-500 text-white p-2 rounded"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing up..." : "Sign up"}
           </Button>
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </form>
-        
+       
       </div>
-          <div className="flex w-56  items-center justify-center text-center mt-4">
-          <Input onChange={()=>{
-            setRememberMe(!rememberMe);
-            localStorage.setItem("rememberMe", !rememberMe ? "true" : "false");
-          }}  type="checkbox" className=" w-20" />
-          <span className="text-xl flex  text-white">Remember me</span>
-        </div>
     </div>
   );
 };
-
-export default LoginForm;

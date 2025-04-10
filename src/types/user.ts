@@ -22,4 +22,12 @@ export type USER = {
     createdAt: Date;
     updatedAt: Date;
 }
-
+  export type UserApiResponse = {
+      data: USER & {
+        accessToken?: string;
+        refreshToken?: string;
+      };
+      message: string;
+      statusCode: number;
+      success: boolean;
+  };

@@ -4,6 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CalendarIcon, MapPinIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import ProfileEditModal from "@/components/home/UpdateProfile";
+import Logout from "@/components/Auth/Logout";
 
 const Me = () => {
   const { data } = useGetMyProfile();
@@ -46,7 +47,7 @@ const Me = () => {
   return (
     <div className="w-full min-h-full bg-black">
       {/* Header with back button */}
-      <div onClick={() => navigate(-1)} className="sticky top-0 z-10 backdrop-blur-md bg-black dark:bg-black/70 p-4 flex items-center">
+      <div onClick={() => navigate(-1)} className="flex justify-between sticky top-0 z-10 backdrop-blur-md bg-black dark:bg-black/70 p-4  items-center">
         <div className="flex items-center gap-6">
           <button className="rounded-full p-2 hover:bg-gray-100 ">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,6 +60,7 @@ const Me = () => {
             <p className="text-sm text-gray-500">0 posts</p>
           </div>
         </div>
+        <div><Logout /></div>
       </div>
 
       {/* Cover and profile image */}
