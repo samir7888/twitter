@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import {  useUpdateMyProfile } from '@/hooks/useUpdateProfile';
+import {  useUpdateMyProfile } from '@/hooks/profile/useUpdateProfile';
 import { UserProfile } from '@/types/userProfile';
 
 export default function ProfileEditModal({ isOpen, setIsOpen,initialValues }:{isOpen: boolean, setIsOpen: (isOpen: boolean) => void,initialValues:UserProfile}) {

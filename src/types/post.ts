@@ -48,6 +48,11 @@ export interface Post {
     content: string;
     createdAt: string;
     images: IPostImage[];
+    isBookmarked: boolean;
+    isLiked: boolean;
+    likes: number;
+    tags: string[];
+    updatedAt: string;
 }
 
 export interface IPostsResponse {
@@ -60,5 +65,15 @@ export interface IPostsResponse {
 }
 
 export interface IPostsApiResponse {
-    data: IPostsResponse;
+    data: IPostsResponse | Post;
+    message: string;
+    statusCode: number;
+    success: boolean;
 }
+export interface IPostApiResponse {
+    data: Post;
+    message: string;
+    statusCode: number;
+    success: boolean;
+}
+

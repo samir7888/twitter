@@ -1,12 +1,12 @@
-import { Posts } from "@/components/home/posts";
+import { Posts } from "@/components/home/Posts";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthProvider";
-import { useUploadPost } from "@/hooks/useUploadPost";
+// import { useAuth } from "@/context/AuthProvider";
+import { useUploadPost } from "@/hooks/posts/useUploadPost";
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [tweet, setTweet] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [images, setImages] = useState<File[]>([]);

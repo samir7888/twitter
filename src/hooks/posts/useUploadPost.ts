@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import useAxiosAuth from './useAuth'
+import useAxiosAuth from '../useAuth'
 
 export const useUploadPost = () => {
   const axiosInstance = useAxiosAuth()

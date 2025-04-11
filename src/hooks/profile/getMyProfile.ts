@@ -1,8 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query'
-import useAxiosAuth from './useAuth';
-// import { BASEURL } from '@/lib/constant';
 import { UserProfileApiResponse } from '@/types/userProfile';
+import useAxiosAuth from '../useAuth';
 
 
 export  const useGetMyProfile = () => {

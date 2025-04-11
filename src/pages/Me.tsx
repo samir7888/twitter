@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useGetMyProfile } from "@/hooks/getMyProfile";
+import { useGetMyProfile } from "@/hooks/profile/getMyProfile";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CalendarIcon, MapPinIcon } from "lucide-react";
 import { useState, useEffect } from "react";

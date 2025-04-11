@@ -6,6 +6,8 @@ import HomeLayout from "./components/layout/HomeLayout";
 import Me from "./pages/Me";
 import Persist from "./lib/Persist";
 import { RegisterPage } from "./pages/RegisterPage";
+import path from "path";
+import SinglePost from "./components/home/SinglePost";
 
 export const routes = [
   {
@@ -31,7 +33,10 @@ export const routes = [
         </Persist>
       </AuthGuard>
     ),
-    children: [{ index: true, element: <Home /> }],
+    children: [
+      { index: true, element: <Home /> },
+  
+    ],
   },
   {
     path: "/:username",
@@ -40,7 +45,7 @@ export const routes = [
         <HomeLayout />
       </Persist>
     ),
-    children: [{ index: true, element: <Me /> }],
+    children: [{ index: true, element: <Me /> },    { path:"status/:postId", element: <SinglePost /> }],
   },
   {
     path: "/settings",
