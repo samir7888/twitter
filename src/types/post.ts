@@ -65,7 +65,7 @@ export interface IPostsResponse {
 }
 
 export interface IPostsApiResponse {
-    data: IPostsResponse | Post;
+    data: IPostsResponse;
     message: string;
     statusCode: number;
     success: boolean;

@@ -1,8 +1,9 @@
-import { PostCard } from "./Posts";
+
 import { useParams } from "react-router-dom";
 import { useGetSinglePost } from "@/hooks/posts/getSinglePost";
-import { Input } from "../ui/input";
+
 import { Button } from "../ui/button";
+import { PostCard } from "./PostCard";
 
 const SinglePost = () => {
   const { postId } = useParams();

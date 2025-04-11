@@ -5,6 +5,8 @@ import { CalendarIcon, MapPinIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import ProfileEditModal from "@/components/home/UpdateProfile";
 import Logout from "@/components/Auth/Logout";
+import { UserProfile } from "@/types/userProfile";
+import Path from "@/components/home/Path";
 
 const Me = () => {
   const { data } = useGetMyProfile();
@@ -30,7 +32,11 @@ const Me = () => {
   };
 
   // Format date to "Joined Month Year" format
-  const formatJoinDate = (dateString) => {
+  interface FormatJoinDateProps {
+    dateString: string;
+  }
+
+  const formatJoinDate = (dateString: FormatJoinDateProps["dateString"]): string => {
     if (!dateString) return "";
     const date = new Date(dateString);
     return `Joined ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
@@ -147,12 +153,9 @@ const Me = () => {
       </div>
 
       {/* Tweets */}
-      <div className="min-h-40 flex justify-center items-center p-8 text-center text-gray-500">
+      <div className="min-h-40 flex justify-start items-center text-center text-gray-500">
         {activeTab === "tweets" && (
-          <div>
-            <p className="text-xl font-bold text-white mb-1">Share your thoughts</p>
-            <p>When you post a Tweet, it will show up here.</p>
-          </div>
+          <Path />
         )}
         
         {activeTab === "replies" && (
@@ -181,7 +184,7 @@ const Me = () => {
       {isOpen && <ProfileEditModal 
         isOpen={isOpen} 
         setIsOpen={handleModalClose}
-        initialValues={data}
+        initialValues={data || {} as UserProfile}
         
       />}
     </div>
