@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/AuthProvider";
 import { useLikePost } from "@/hooks/posts/likePost";
+import { formatDate } from "@/lib/TimeFormat";
 import { Post } from "@/types/post";
 import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
 import React from "react";
@@ -21,10 +22,7 @@ export const PostCard = ({ post }: { post: Post }) => {
   } = post;
   const { mutate: likeThePost } = useLikePost();
   const [isPostLiked, setIsPostLiked] = React.useState(post.isLiked);
-  const formattedDate = new Date(createdAt).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+
   const navigate = useNavigate();
   return (
     <div className="p-4 text-white cursor-pointer ">
@@ -47,7 +45,9 @@ export const PostCard = ({ post }: { post: Post }) => {
               </span> */}
             <span className="ml-1 text-gray-400">@{username}</span>
             <span className="mx-1 text-gray-500">·</span>
-            <span className="text-gray-500 text-sm">{formattedDate}</span>
+            <span className="text-gray-500 text-sm">
+              {formatDate(createdAt)}
+            </span>
           </div>
 
           {/* Post content */}
@@ -71,7 +71,9 @@ export const PostCard = ({ post }: { post: Post }) => {
 
           {/* Action buttons */}
           <div className="flex gap-5 justify-between max-w-md mt-3">
-            <button className="flex items-center text-gray-500 hover:text-blue-500 group">
+            <button   onClick={() => {
+              navigate(`/${username}/status/${post._id}`);
+            }} className="flex items-center text-gray-500 hover:text-blue-500 group">
               <MessageCircle
                 size={18}
                 className="mr-1 group-hover:text-blue-500"

@@ -6,7 +6,7 @@ export const useLikePost
         const axiosInstance = useAxiosAuth()
         const queryClient = useQueryClient()
         return useMutation({
-            mutationKey: ['likePost'],
+            mutationKey: ['commentPost'],
             mutationFn: async ({ postId }: { postId: string }) => {
                 const res = await axiosInstance.post(`/social-media/like/post/${postId}`,{},{
                     headers: {
