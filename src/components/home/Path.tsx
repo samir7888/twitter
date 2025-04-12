@@ -1,6 +1,7 @@
 import { useGetMyPost } from '@/hooks/posts/useGetMyPost'
-import React from 'react'
+
 import { PostCard } from './PostCard';
+import { Post } from '@/types/post';
 
 const Path = () => {
     const {data,isPending} = useGetMyPost();
@@ -16,7 +17,7 @@ const Path = () => {
   
   return (
     <div>
-       {data?.totalPosts > 0 ? (data.posts.map(post=>{
+       {data?.totalPosts > 0 ? (data.posts.map((post: Post) => {
          return <PostCard post={post} key={post._id}/>
        } )): <div className='text-center text-gray-500'>No posts found</div>}
     </div>

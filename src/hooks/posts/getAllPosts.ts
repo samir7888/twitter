@@ -21,5 +21,6 @@ export const useGetPosts = () => {
                 throw error;
             }
         },
+        
     });
 };

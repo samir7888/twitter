@@ -124,7 +124,7 @@ export default function ProfileEditModal({
     // Prepare and upload file
     const formData = new FormData();
     formData.append('coverImage', file);
-    updateCoverImageMutate(formData);
+    updateCoverImageMutate({ params: formData });
   };
 
 
