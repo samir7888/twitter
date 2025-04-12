@@ -95,7 +95,7 @@ const Home = () => {
   const username = localStorage.getItem("username")  || "User";
 
   return (
-    <div className="border-b border-gray-200 dark:border-gray-800">
+    <div className="border-b  border-gray-200 ">
       <div className="flex gap-3 p-4">
         <div className="flex-shrink-0">
           <Link to={`/${username}`}>

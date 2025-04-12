@@ -1,21 +1,15 @@
-import React, { JSX } from "react";
-import LoginPage from "../../pages/LoginPage";
-import { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
+import { Navigate, useLocation } from "react-router-dom";
 
-interface AuthGuardProps {
-  children: ReactNode;
-}
+export const AuthGuard = ({children}:{children:React.ReactNode}) => {
+  const { accessToken } = useAuth();
+  const location = useLocation();
 
-export const AuthGuard = ({ children }: AuthGuardProps): JSX.Element => {
-const {currentUser,accessToken} = useAuth();
-  const navigate = useNavigate();
-
+  // ✅ If user is not authenticated, redirect to login page
   if (!accessToken) {
-    navigate("/login", { replace: true }); // Redirect to login page if not authenticated
-    return <LoginPage />; // Redirect to login page if not authenticated
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  localStorage.setItem("username", currentUser?.username || "");
-  return <>{children}</>;
+
+  // ✅ If authenticated, render the nested route
+  return children;
 };

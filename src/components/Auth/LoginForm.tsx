@@ -12,7 +12,7 @@ const LoginForm = () => {
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState<boolean>(false);
-  const { setAccessToken, setRefreshToken, setUser } = useAuth();
+  const { setAccessToken, setUser } = useAuth();
   const navigate = useNavigate();
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,9 +24,10 @@ const LoginForm = () => {
         username,
         password,
       });
-
+      console.log(res.data.data.accessToken);
+      console.log(res.data.data.refreshToken);
       setAccessToken(res.data.data.accessToken);
-      setRefreshToken(res.data.data.refreshToken);
+      
       setUser(res.data.data.user);
 
       navigate("/home", { replace: true });

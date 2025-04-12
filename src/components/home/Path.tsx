@@ -4,7 +4,7 @@ import { PostCard } from './PostCard';
 
 const Path = () => {
     const {data,isPending} = useGetMyPost();
-    console.log(data)
+   
     if (!data && isPending) {
         return (
             <div className='flex justify-center items-center h-64'>

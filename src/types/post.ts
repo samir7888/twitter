@@ -44,6 +44,7 @@ export interface Post {
     __v: number;
     _id: string;
     author: IAuthor;
+    account?: IAuthor;
     comments: number;
     content: string;
     createdAt: string;
@@ -63,6 +64,7 @@ export interface IPostsResponse {
     page: number;
     posts: Post[];
 }
+
 
 export interface IPostsApiResponse {
     data: IPostsResponse;

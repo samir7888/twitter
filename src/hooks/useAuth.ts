@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useAuth } from "../context/AuthProvider";
-import { BASEURL } from "../lib/constant";
+import { useAuth } from "@/context/AuthProvider";
+import { BASEURL } from "@/lib/constant";
 import { useNavigate } from "react-router-dom";
 
 const useAxiosAuth = () => {
@@ -9,10 +9,10 @@ const useAxiosAuth = () => {
 
   const axiosInstance = axios.create({
     baseURL: BASEURL,
-    withCredentials: true, // ✅ Needed to send/receive cookies
+    withCredentials: true, // ✅ Important: Send cookies (refresh token)
   });
 
-  // ✅ Attach access token to requests
+  // Attach access token to all requests
   axiosInstance.interceptors.request.use(
     (config) => {
       if (accessToken) {
@@ -23,7 +23,7 @@ const useAxiosAuth = () => {
     (error) => Promise.reject(error)
   );
 
-  // ✅ Handle 401 and refresh using the *same* axiosInstance
+  // If request fails with 401, attempt to refresh
   axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -33,21 +33,22 @@ const useAxiosAuth = () => {
         originalRequest._retry = true;
 
         try {
-          const res = await axiosInstance.post(
-            "/users/refresh", // ✅ Ensure this matches your backend
-            {}, 
-            { withCredentials: true }
+          const res = await axios.post(
+            `${BASEURL}/users/refresh-token`,
+            {},
+            {
+              withCredentials: true, // ✅ Send cookie for refresh
+            }
           );
 
           const newAccessToken = res.data.accessToken;
-
-          if (setAccessToken) setAccessToken(newAccessToken);
+          setAccessToken(newAccessToken);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-          return axiosInstance(originalRequest); // 🔁 Retry original request
+          return axiosInstance(originalRequest); // Retry original request
         } catch (refreshError) {
           console.error("Session expired. Logging out...");
-          if (setAccessToken) setAccessToken(null);
+          setAccessToken(null);
           navigate("/login", { replace: true });
           return Promise.reject(refreshError);
         }

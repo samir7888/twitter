@@ -15,7 +15,7 @@ export const Posts = () => {
   }
   
     const posts = (data?.posts as Post[]) || [];
-    console.log(data?.posts);
+    
   return (
     <div className="flex flex-col divide-y divide-gray-200">
       {posts.length === 0 ? (

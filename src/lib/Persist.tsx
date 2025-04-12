@@ -1,50 +1,50 @@
-import { useAuth } from '@/context/AuthProvider'
-import useAxiosAuth from '@/hooks/useAuth'
-import React, { useEffect, useState } from 'react'
+import { useAuth } from "@/context/AuthProvider";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BASEURL } from "./constant";
+import useAxiosAuth from "@/hooks/useAuth";
+import { ClockFading } from "lucide-react";
 
 interface Props {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const Persist: React.FC<Props> = ({ children }) => {
-  const axiosInstance = useAxiosAuth()
-  const [loading, setLoading] = useState(true) // default true so we wait for token check
-  const { accessToken, setAccessToken, refreshToken } = useAuth()
-const rememberMe = localStorage.getItem('rememberMe') === 'true' || false; 
-
+  const { accessToken, setAccessToken } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const rememberMe = localStorage.getItem("rememberMe") === "true";
+const axiosInstance = useAxiosAuth();
   useEffect(() => {
-
     const refreshAuth = async () => {
       try {
         const res = await axiosInstance.post(
-          '/users/refresh',
+          `/users/refresh-token`,
           {},
           {
-            withCredentials: true,
+            withCredentials: true, // ✅ Send cookie with refresh token
           }
-        )
-
-        setAccessToken(res.data.accessToken)
+        );
+        console.log(res.data)
+        setAccessToken(res.data.accessToken);
       } catch (error) {
-        console.error('Error refreshing token:', error)
+        console.error("Error refreshing token:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    if (rememberMe && !accessToken && refreshToken) {
-      refreshAuth()
+    if (rememberMe && !accessToken) {
+      refreshAuth();
     } else {
-      setLoading(false) // no refresh needed
-   
+      setLoading(false); // No refresh needed
     }
-  }, [accessToken, refreshToken, setAccessToken, axiosInstance,rememberMe])
+  }, []);
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
-  return <>{children}</>
-}
+  return <>{children}</>;
+};
 
-export default Persist
+export default Persist;

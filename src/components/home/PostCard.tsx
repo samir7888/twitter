@@ -57,14 +57,14 @@ export const PostCard = ({ post }:{post:Post}) => {
                   <img
                     src={images[0]?.url}
                     alt="Post"
-                    className=" rounded-xl border w-full h-fit md:w-[650px] md:h-[650px] object-center "
+                    className=" rounded-xl border w-full h-fit md:w-[650px] md:h-[650px] object-cover "
                   />
                 </div>
               ) : null}
             </div>
   
             {/* Action buttons */}
-            <div className="flex justify-between max-w-md mt-3">
+            <div className="flex gap-5 justify-between max-w-md mt-3">
               <button className="flex items-center text-gray-500 hover:text-blue-500 group">
                 <MessageCircle
                   size={18}

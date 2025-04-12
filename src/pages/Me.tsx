@@ -55,7 +55,7 @@ const Me = () => {
       {/* Header with back button */}
       <div onClick={() => navigate(-1)} className="flex justify-between sticky top-0 z-10 backdrop-blur-md bg-black dark:bg-black/70 p-4  items-center">
         <div className="flex items-center gap-6">
-          <button className="rounded-full p-2 hover:bg-gray-100 ">
+          <button className="rounded-full p-2 hover:bg-gray-700 ">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M19 12H5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

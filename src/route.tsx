@@ -6,56 +6,60 @@ import HomeLayout from "./components/layout/HomeLayout";
 import Me from "./pages/Me";
 import Persist from "./lib/Persist";
 import { RegisterPage } from "./pages/RegisterPage";
-import path from "path";
 import SinglePost from "./components/home/SinglePost";
 
-export const routes = [
+// ✅ Public Routes
+const publicRoutes = [
   {
     path: "/",
-    element: (
-      <AuthGuard>
-        <AuthLayout />
-      </AuthGuard>
-    ),
+    element: <AuthLayout />,
     children: [
       { index: true, element: <LoginPage /> },
       { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <RegisterPage /> },
     ],
   },
-  { path: "signup", element: <RegisterPage /> },
+];
 
+// ✅ Protected Routes (wrapped in Persist + AuthGuard)
+const protectedRoutes = [
   {
     path: "/home",
     element: (
-      <AuthGuard>
-        <Persist>
+      <Persist>
+        <AuthGuard>
           <HomeLayout />
-        </Persist>
-      </AuthGuard>
+        </AuthGuard>
+      </Persist>
     ),
-    children: [
-      { index: true, element: <Home /> },
-  
-    ],
+    children: [{ index: true, element: <Home /> }],
   },
   {
     path: "/:username",
     element: (
       <Persist>
-        <HomeLayout />
+        <AuthGuard>
+          <HomeLayout />
+        </AuthGuard>
       </Persist>
     ),
-    children: [{ index: true, element: <Me /> },    { path:"status/:postId", element: <SinglePost /> }],
+    children: [
+      { index: true, element: <Me /> },
+      { path: "status/:postId", element: <SinglePost /> },
+    ],
   },
   {
     path: "/settings",
     element: (
-      <AuthGuard>
-        <Persist>
+      <Persist>
+        <AuthGuard>
           <HomeLayout />
-        </Persist>
-      </AuthGuard>
+        </AuthGuard>
+      </Persist>
     ),
     children: [{ path: "profile", element: <Me /> }],
   },
 ];
+
+// ✅ Combine them
+export const routes = [...publicRoutes, ...protectedRoutes];

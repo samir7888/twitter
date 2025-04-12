@@ -1,5 +1,5 @@
 
-import { useQuery } from '@tanstack/react-query'
+import {  useQuery } from '@tanstack/react-query'
 import { UserProfileApiResponse } from '@/types/userProfile';
 import useAxiosAuth from '../useAuth';
 
