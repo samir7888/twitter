@@ -31,12 +31,13 @@ export const useCommentPost = () => {
 }
 
 
+
 // This hook is used to get the comments of a post
 export const useGetPostComment = () => {
   const axiosInstance = useAxiosAuth()
   const {postId} = useParams();
   return useQuery({
-    queryKey: ['postComment'],
+    queryKey: ['getComment'],
     queryFn: async () => {
       const res = await axiosInstance.get<CommentResponse>(`/social-media/comments/post/${postId}`, {
         headers: {
@@ -51,5 +52,31 @@ export const useGetPostComment = () => {
       return res.data.data;
     },
    
+  })
+}
+
+//to like and unlike a comment
+export const useLikeComment = () => {
+  const axiosInstance = useAxiosAuth()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationKey: ['getComment'],
+    mutationFn: async ({commentId}:{commentId:string}) => {
+      const res = await axiosInstance.post(`/social-media/like/comment/${commentId}`,{}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (res.status !== 200) {
+        throw new Error('Network response was not ok')
+      }
+
+      return res.data.data;
+    },
+    onSettled: () => {
+        // 🚀 Invalidate and refetch all posts after successful upload
+        queryClient.invalidateQueries({ queryKey: ['getComment'] })
+      },
   })
 }

@@ -4,8 +4,13 @@ import { useGetSinglePost } from "@/hooks/posts/getSinglePost";
 import { Button } from "../ui/button";
 import { PostCard } from "./PostCard";
 import { useState } from "react";
-import { useCommentPost, useGetPostComment } from "@/hooks/posts/commentPost";
+import {
+  useCommentPost,
+  useGetPostComment,
+  useLikeComment,
+} from "@/hooks/posts/commentPost";
 import { formatDate } from "@/lib/TimeFormat";
+import { Heart } from "lucide-react";
 
 const SinglePost = () => {
   const { postId } = useParams();
@@ -13,7 +18,7 @@ const SinglePost = () => {
   const [comment, setComment] = useState<string>("");
   const { data: commentsData } = useGetPostComment();
   const { mutate } = useCommentPost();
-
+  const { mutate: likeTheComment } = useLikeComment();
   if (!data) {
     return;
   }
@@ -68,6 +73,30 @@ const SinglePost = () => {
                   </span>
                 </p>
                 <p className="text-white text-xl">{comment.content}</p>
+                <div>
+                  <button
+                    className={`flex items-center ${
+                      comment.isLiked
+                        ? "text-red-500"
+                        : "text-gray-500 hover:text-red-500"
+                    } group`}
+                  >
+                    <Heart
+                      onClick={() => {
+                        likeTheComment({
+                          commentId: comment._id,
+                        });
+                      }}
+                      size={18}
+                      className={`mr-1 ${
+                        comment.isLiked
+                          ? "fill-current text-red-500"
+                          : "group-hover:text-red-500"
+                      }`}
+                    />
+                    <span className="text-sm">{comment.likes}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
