@@ -91,7 +91,7 @@ export const PostCard = ({ post }: { post: Post }) => {
                   setIsPostLiked(!isPostLiked);
 
                   likeThePost({
-                    postId: _id,
+                    postId: post._id,
                   });
                 }}
                 size={18}

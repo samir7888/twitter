@@ -25,7 +25,7 @@ export const useCommentPost = () => {
     },
     onSettled: () => {
         // 🚀 Invalidate and refetch all posts after successful upload
-        queryClient.invalidateQueries({ queryKey: ['postComment'] })
+        queryClient.invalidateQueries({ queryKey: ['getComment'] })
       },
   })
 }

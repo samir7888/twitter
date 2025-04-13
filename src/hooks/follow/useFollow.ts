@@ -1,15 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosAuth from '../useAuth'
+import { useParams } from 'react-router-dom'
 
-export const useUploadPost = () => {
+// This hook is used to post a comment on a post
+export const useCommentPost = () => {
   const axiosInstance = useAxiosAuth()
   const queryClient = useQueryClient()
+  const {postId} = useParams();
   return useMutation({
-    mutationKey: ['uploadPost'],
-    mutationFn: async (formData: FormData) => {
-      const res = await axiosInstance.post(`/social-media/posts`, formData, {
+    mutationKey: ['commentPost'],
+    mutationFn: async ({comment}:{comment:string}) => {
+      const res = await axiosInstance.post(`/social-media/comments/post/${postId}`,{content:comment}, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       })
 
@@ -21,7 +24,7 @@ export const useUploadPost = () => {
     },
     onSettled: () => {
         // 🚀 Invalidate and refetch all posts after successful upload
-        queryClient.invalidateQueries({ queryKey: ['infinitePosts'] })
+        queryClient.invalidateQueries({ queryKey: ['getComment'] })
       },
   })
 }

@@ -66,7 +66,13 @@ const Me = () => {
             <p className="text-sm text-gray-500">0 posts</p>
           </div>
         </div>
-        <div><Logout /></div>
+      
+       {
+          // Show logout button only if the user is logged in
+         data && localStorage.getItem('username') === username && 
+      
+        <div><Logout /></div>}
+        
       </div>
 
       {/* Cover and profile image */}

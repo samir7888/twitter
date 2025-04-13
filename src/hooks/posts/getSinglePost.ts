@@ -5,7 +5,7 @@ import { IPostApiResponse } from "@/types/post";
 export const useGetSinglePost = (postId: string) => {
     const axiosInstance = useAxiosAuth();
     return useQuery({
-        queryKey: ['singlePost', postId],
+        queryKey: ['singlePost'],
         queryFn: async () => {
 
             try {

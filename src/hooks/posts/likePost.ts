@@ -22,7 +22,7 @@ export const useLikePost
             },
             onSettled: () => {
                 // 🚀 Invalidate and refetch all posts after successful upload
-                queryClient.invalidateQueries({ queryKey: ['getAllPosts'] })
+                queryClient.invalidateQueries({ queryKey: ['infinitePosts'] })
             },
             
         })
