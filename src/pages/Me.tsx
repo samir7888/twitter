@@ -133,11 +133,11 @@ const Me = () => {
         <div className="flex gap-5 mt-3 text-sm">
           <button className="hover:underline">
             <span className="font-bold text-white dark:text-white">{data?.followingCount ?? 0}</span>{" "}
-            <span className="text-gray-500 dark:text-gray-400">Following</span>
+            <span className="text-gray-500 dark:text-gray-400">{ data && user?.user.username === username?'Followings': 'Followers'}</span>
           </button>
           <button className="hover:underline">
             <span className="font-bold text-white dark:text-white">{data?.followersCount ?? 0}</span>{" "}
-            <span className="text-gray-500 dark:text-gray-400">Followers</span>
+            <span className="text-gray-500 dark:text-gray-400">{ data && user?.user.username === username? 'Followers':'Followings'}</span>
           </button>
         </div>
       </div>

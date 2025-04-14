@@ -102,18 +102,7 @@ const SinglePost = () => {
             </div>
           </div>
         ))}
-        <div className="flex justify-center mt-4">
-          <Button
-            onClick={() => {
-              searchParams.set("page", String(page + 1));
-            setSearchParams(searchParams);
-            
-            }}
-            className="bg-blue-500 text-white rounded-full p-2"
-          >
-            Load more comments
-          </Button>
-        </div>
+       
       </div>
     </div>
   );

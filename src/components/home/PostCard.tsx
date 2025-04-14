@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthProvider";
 import { useDeletePost } from "@/hooks/posts/deletePost";
+import {
+  useFollowUser,
+  useGetUserFollowerList,
+} from "@/hooks/follow/useFollow";
 
 export const PostCard = ({ post }: { post: Post }) => {
   const { user } = useAuth();
@@ -28,10 +32,14 @@ export const PostCard = ({ post }: { post: Post }) => {
     images,
     author,
   } = post;
+console.log(post)
   const { mutate } = useDeletePost();
-  console.log(author.account.username);
-
-  const username = author.account.username || "User";
+  const { mutate: followTheUser } = useFollowUser(author?.account?._id);
+  const { data: followersList } = useGetUserFollowerList(
+    author?.account?.username
+  );
+  console.log(followersList);
+  const username = author?.account?.username || "User";
   const { mutate: likeThePost } = useLikePost();
   const [isPostLiked, setIsPostLiked] = React.useState(post.isLiked);
 
@@ -104,6 +112,23 @@ export const PostCard = ({ post }: { post: Post }) => {
                     }}
                   >
                     Delete post
+                  </DropdownMenuItem>
+                )}
+                {!(user?.user.username === username) && (
+                  <DropdownMenuItem
+                    variant="default"
+                    onClick={() => {
+                      followTheUser();
+                    }}
+                  >
+                    {followersList && followersList?.followers?.length > 0
+                      ? followersList?.followers?.map((follower) => {
+                          return follower.username === user?.user.username
+                            ? "Unfollow"
+                            : "Follow";
+                        })
+                      : "follow"}{" "}
+                    @{post?.author?.account.username}
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem
