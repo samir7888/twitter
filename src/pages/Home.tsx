@@ -20,6 +20,7 @@ const {user} = useAuth();
 const username = user?.user.username || "User";
   // Auto-resize textarea as content grows
   useEffect(() => {
+    
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -97,7 +98,7 @@ const username = user?.user.username || "User";
   // const username = localStorage.getItem("username")  || "User";
 
   return (
-    <div className="border-b  border-gray-200 ">
+    <div className=" ">
       <div className="flex gap-3 p-4">
         <div className="flex-shrink-0">
           <Link to={`/${username}`}>

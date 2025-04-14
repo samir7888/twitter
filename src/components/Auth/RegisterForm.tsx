@@ -49,7 +49,7 @@ export const RegisterForm = () => {
       } else {
         console.error("Unexpected error:", error);
         setError("Something went wrong. Please try again.");
-      }
+       }
     } finally {
       setLoading(false);
     }

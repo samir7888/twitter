@@ -36,7 +36,7 @@ export const Posts = () => {
   const allPosts = data?.pages.flatMap((page) => page.posts) || [];
 
   return (
-    <div className="flex flex-col divide-y divide-gray-200">
+    <div className="flex flex-col divide-y divide-gray-600">
       {isLoading && (
         <div className="py-10 text-center text-gray-500">Loading posts...</div>
       )}
