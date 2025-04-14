@@ -7,6 +7,7 @@ import ProfileEditModal from "@/components/home/UpdateProfile";
 import Logout from "@/components/Auth/Logout";
 import { UserProfile } from "@/types/userProfile";
 import Path from "@/components/home/Path";
+import { useAuth } from "@/context/AuthProvider";
 
 const Me = () => {
   const { data } = useGetMyProfile();
@@ -15,7 +16,7 @@ const Me = () => {
   const [activeTab, setActiveTab] = useState("tweets");
   const navigate = useNavigate();
   const location = useLocation();
-
+  const {user} = useAuth();
   // Check if the current route is the settings profile route
   useEffect(() => {
     if (location.pathname === "/settings/profile") {
@@ -69,7 +70,7 @@ const Me = () => {
       
        {
           // Show logout button only if the user is logged in
-         data && localStorage.getItem('username') === username && 
+         data && user?.user.username === username && 
       
         <div><Logout /></div>}
         
@@ -94,7 +95,7 @@ const Me = () => {
             />
           </div>
           
-          <div className="flex justify-end w-full pt-3">
+         {  data && user?.user.username === username &&  <div className="flex justify-end w-full pt-3">
             <Button 
               onClick={() =>{ navigate("/settings/profile");
                 setIsOpen(true);
@@ -103,7 +104,7 @@ const Me = () => {
             >
               Edit profile
             </Button>
-          </div>
+          </div>}
         </div>
       </div>
 

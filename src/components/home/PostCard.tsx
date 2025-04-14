@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthProvider";
+
 import { useLikePost } from "@/hooks/posts/likePost";
 import { formatDate } from "@/lib/TimeFormat";
 import { Post } from "@/types/post";
@@ -7,9 +7,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export const PostCard = ({ post }: { post: Post }) => {
-  const username = localStorage.getItem("username") || "User";
-
-  const { user } = useAuth();
+ 
+  
   const {
     content,
     createdAt,
@@ -18,8 +17,10 @@ export const PostCard = ({ post }: { post: Post }) => {
     isLiked,
     isBookmarked,
     images,
-    _id,
+    author
   } = post;
+  console.log(author.account.username)
+  const username = author.account.username || "User";
   const { mutate: likeThePost } = useLikePost();
   const [isPostLiked, setIsPostLiked] = React.useState(post.isLiked);
 
@@ -31,7 +32,7 @@ export const PostCard = ({ post }: { post: Post }) => {
         <div onClick={() => navigate(`/${username}`)} className="flex-shrink-0">
           <img
             src={"https://avatar.iran.liara.run/public"}
-            alt={`${user?.username} `}
+            alt={`${username} `}
             className="h-12 w-12 rounded-full"
           />
         </div>

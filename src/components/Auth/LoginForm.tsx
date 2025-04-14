@@ -5,6 +5,7 @@ import axios from "axios";
 import { BASEURL } from "@/lib/constant";
 import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { AuthResponse } from "@/types/loginTypes";
 
 const LoginForm = () => {
   const [username, setUsername] = React.useState("");
@@ -20,17 +21,15 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const res = await axios.post(`${BASEURL}/users/login`, {
+      const res = await axios.post<AuthResponse>(`${BASEURL}/users/login`, {
         username,
         password,
       });
-      console.log(res.data.data.accessToken);
-      console.log(res.data.data.refreshToken);
+   
       setAccessToken(res.data.data.accessToken);
-      
-      setUser(res.data.data.user);
+      setUser(res.data.data);
 
-      localStorage.setItem('username',res.data.data.user.username);
+      
       navigate("/home", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

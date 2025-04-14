@@ -3,7 +3,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { BASEURL } from "@/lib/constant";
-import { useAuth } from "@/context/AuthProvider";
+// import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { UserApiResponse } from "@/types/user";
 
@@ -14,7 +14,7 @@ export const RegisterForm = () => {
   const [email, setEmail] = React.useState("");
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { setUser } = useAuth();
+  // const { setUser } = useAuth();
   const navigate = useNavigate();
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,7 +22,7 @@ export const RegisterForm = () => {
     setError("");
 
     try {
-      const res = await axios.post<UserApiResponse>(
+      await axios.post<UserApiResponse>(
         `${BASEURL}/users/register`,
         {
           email,
@@ -33,8 +33,8 @@ export const RegisterForm = () => {
         }
       );
 
-      console.log(res.data.data);
-      setUser(res.data.data);
+      
+      // setUser(res.data.data);
 
       navigate("/login", { replace: true });
     } catch (error: unknown) {

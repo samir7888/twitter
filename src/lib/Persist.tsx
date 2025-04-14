@@ -1,9 +1,9 @@
 import { useAuth } from "@/context/AuthProvider";
-import axios from "axios";
+// import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASEURL } from "./constant";
+// import { BASEURL } from "./constant";
 import useAxiosAuth from "@/hooks/useAuth";
-import { ClockFading } from "lucide-react";
+// import { ClockFading } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;

@@ -1,5 +1,6 @@
 import { Posts } from "@/components/home/Posts";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthProvider";
 // import { useAuth } from "@/context/AuthProvider";
 import { useUploadPost } from "@/hooks/posts/useUploadPost";
 import React, { useState, useRef, useEffect } from "react";
@@ -15,7 +16,8 @@ const Home = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useUploadPost();
-
+const {user} = useAuth();
+const username = user?.user.username || "User";
   // Auto-resize textarea as content grows
   useEffect(() => {
     if (textareaRef.current) {
@@ -92,7 +94,7 @@ const Home = () => {
     }
   };
 
-  const username = localStorage.getItem("username")  || "User";
+  // const username = localStorage.getItem("username")  || "User";
 
   return (
     <div className="border-b  border-gray-200 ">

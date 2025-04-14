@@ -54,7 +54,7 @@ export const Posts = () => {
       )}
 
       {/* Trigger for infinite scroll */}
-      <div ref={observerRef} className="h-10" />
+      {allPosts.length > 0 && <div ref={observerRef} className="h-10" />}
     </div>
   );
 };
