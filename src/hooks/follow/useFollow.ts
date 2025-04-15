@@ -22,9 +22,10 @@ export const useFollowUser = (toBeFollowedUserId: string) => {
       return res.data.data;
     },
     onSettled: () => {
-      // 🚀 Invalidate and refetch all posts after successful upload
-      queryClient.invalidateQueries({ queryKey: ['followersList'] })
+      queryClient.invalidateQueries({ queryKey: ['followersList'] });
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
     },
+    
   })
 }
 
