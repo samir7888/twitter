@@ -4,6 +4,7 @@ import { useUpdateMyProfile } from "@/hooks/profile/useUpdateProfile";
 import { useUpdateCoverImage } from "@/hooks/profile/useUpdateCoverImage";
 // import { useUpdateProfileImage } from "@/hooks/profile/useUpdateProfileImage";
 import { UserProfile } from "@/types/userProfile";
+import { useUpdateProfile } from "@/hooks/profile/useUpdateAvatar";
 
 export default function ProfileEditModal({
   isOpen,
@@ -15,6 +16,7 @@ export default function ProfileEditModal({
   initialValues: UserProfile;
 }) {
   const coverImageInputRef = useRef<HTMLInputElement>(null);
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -50,13 +52,10 @@ export default function ProfileEditModal({
   } = useUpdateCoverImage();
 
   // Profile image update mutation
-  // const { 
-  //   mutate: updateProfileImageMutate, 
-  //   isPending: isProfileImageUpdatePending, 
-  //   isError: isProfileImageUpdateError, 
-  //   error: profileImageUpdateError, 
-  //   isSuccess: isProfileImageUpdateSuccess 
-  // } = useUpdateProfileImage();
+  const { 
+    mutate: updateProfileImageMutate, 
+  
+  } = useUpdateProfile();
 
   // Form data state
   const [formData, setFormData] = useState<FormData>({
@@ -71,6 +70,7 @@ export default function ProfileEditModal({
 
   // Preview states for images
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
 
   // Form data interface
   interface FormData {
@@ -107,6 +107,9 @@ export default function ProfileEditModal({
   const handleCoverImageClick = () => {
     coverImageInputRef.current?.click();
   };
+  const handleProfileImageClick = () => {
+    profileImageInputRef.current?.click();
+  };
 
 
 
@@ -126,6 +129,22 @@ export default function ProfileEditModal({
     formData.append('coverImage', file);
     updateCoverImageMutate({ params: formData });
   };
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Create a preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    
+    // Prepare and upload file
+    const formData = new FormData();
+    formData.append('coverImage', file);
+    updateProfileImageMutate({ params: formData });
+  };
 
 
   
@@ -136,6 +155,10 @@ export default function ProfileEditModal({
     // Close modal on success
     if (isProfileUpdateSuccess  && 
         (!coverImagePreview || isCoverUpdateSuccess)) {
+      setIsOpen(false);
+    }
+    if (isProfileUpdateSuccess  && 
+        (!profileImagePreview || isProfileUpdateSuccess)) {
       setIsOpen(false);
     }
   };
@@ -201,7 +224,7 @@ export default function ProfileEditModal({
             <div className="h-28 relative lg:h-32 bg-black dark:bg-gray-800 overflow-hidden">
               {/* Cover Image */}
               <img
-                src={coverImagePreview || initialValues?.coverImageUrl || "https://picsum.photos/seed/picsum/1500/500"}
+                src={coverImagePreview || (typeof initialValues?.coverImage === "string" ? initialValues.coverImage : undefined) || "https://picsum.photos/seed/picsum/1500/500"}
                 alt="cover"
                 className="w-full h-full object-cover"
               />
@@ -221,18 +244,24 @@ export default function ProfileEditModal({
             </div>
             {/* Profile Image */}
             <div className="flex justify-between px-4 relative">
-              <div className="absolute -top-14 border-4 border-white dark:border-black rounded-full">
+              <div className="absolute -top-14 border-4 border-white dark:border-black rounded-full  ">
                 <img
-                  src={"https://avatar.iran.liara.run/public"}
+                  src={profileImagePreview || (typeof initialValues.account.avatar === "string" ? initialValues.account.avatar : undefined) || "https://avatar.iran.liara.run/public"}
                   alt="profile"
                   className="max-w-32 max-h-16 rounded-full object-cover"
                 />
                 <div 
-                  
+                  onClick={handleProfileImageClick}
                   className="text-white bg-gray-600 opacity-50 p-2 rounded-full absolute top-3 left-3 cursor-pointer hover:opacity-70"
                 >
                   <Camera />
-              
+                  <input
+                  type="file"
+                  ref={profileImageInputRef}
+                  onChange={handleProfileImageChange}
+                  className="hidden"
+                  accept="image/*"
+                />
                 </div>
               </div>
             </div>
