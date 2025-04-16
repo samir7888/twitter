@@ -263,7 +263,7 @@ const Me = () => {
       <div className="flex flex-col divide-y divide-gray-600">
         {data && !(user?.user.username === username)
           ? activeTab === "tweets" &&
-            (userPosts?.posts?.length > 0 ? (
+            (userPosts && userPosts?.posts?.length > 0 ? (
               userPosts?.posts.map((post: Post) => {
                 return <PostCard post={post} key={post._id} />;
                 

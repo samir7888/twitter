@@ -13,7 +13,9 @@ function App() {
   return (
     <div>
       <QueryClientProvider client={queryClient}>
-        <AppRoutes />
+        
+          <AppRoutes />
+       
       </QueryClientProvider>
     </div>
   );

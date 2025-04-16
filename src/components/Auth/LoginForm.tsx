@@ -30,6 +30,7 @@ const LoginForm = () => {
       setUser(res.data.data);
 
       
+      localStorage.setItem('username',res.data.data.user.username)
       navigate("/home", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -42,6 +43,7 @@ const LoginForm = () => {
         setError("Something went wrong. Please try again.");
       }
     } finally {
+
       setLoading(false);
     }
   }
