@@ -2,21 +2,22 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAxiosAuth from '../useAuth'
 import { FollowersResponse, FollowingResponse } from '@/types/Following';
 
-// This hook is used to post a comment on a post
-export const useFollowUser = (toBeFollowedUserId: string) => {
-  const axiosInstance = useAxiosAuth()
-  const queryClient = useQueryClient()
+/// useFollowUser.ts
+export const useFollowUser = () => {
+  const axiosInstance = useAxiosAuth();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: ['followUser'],
-    mutationFn: async () => {
-      const res = await axiosInstance.post(`/social-media/follow/${toBeFollowedUserId}`, {}, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+    mutationFn: async (userId: string) => {
+      const res = await axiosInstance.post(
+        `/social-media/follow/${userId}`,
+        {},
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
       if (res.status !== 200) {
-        throw new Error('Network response was not ok')
+        throw new Error('Network response was not ok');
       }
 
       return res.data.data;
@@ -25,9 +26,8 @@ export const useFollowUser = (toBeFollowedUserId: string) => {
       queryClient.invalidateQueries({ queryKey: ['followersList'] });
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
     },
-    
-  })
-}
+  });
+};
 
 
 

@@ -34,19 +34,18 @@ export const PostCard = ({ post }: { post: Post }) => {
   } = post;
 console.log(post)
   const { mutate } = useDeletePost();
-  const { mutate: followTheUser } = useFollowUser(author?.account?._id);
+  const { mutate: followTheUser } = useFollowUser();
   const { data: followersList } = useGetUserFollowerList(
     author?.account?.username
   );
-  console.log(followersList);
   const username = author?.account?.username || "User";
   const { mutate: likeThePost } = useLikePost();
   const [isPostLiked, setIsPostLiked] = React.useState(post.isLiked);
 
   const navigate = useNavigate();
   return (
-    <div className="p-4 text-white cursor-pointer ">
-      <div className="flex flex-col space-x-3">
+    <div className="p-4 w-full  text-white cursor-pointer ">
+      <div className="flex flex-col  space-x-3">
         <div className="flex w-full justify-between">
           <div className="flex gap-3 w-full">
             {/* Avatar */}
@@ -118,7 +117,7 @@ console.log(post)
                   <DropdownMenuItem
                     variant="default"
                     onClick={() => {
-                      followTheUser();
+                      followTheUser(author?.account?._id);
                     }}
                   >
                     {followersList && followersList?.followers?.length > 0

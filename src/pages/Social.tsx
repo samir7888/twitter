@@ -18,6 +18,9 @@ const Social = () => {
   const { data: userFollowing, isPending: loadingFollowing } =
     useGetUserFollowingList(username || "");
 
+  // ✅ FIXED: only call the hook once
+  const { mutate: followMutate } = useFollowUser();
+
   const renderUserCard = (user: {
     _id: string;
     username: string;
@@ -26,14 +29,12 @@ const Social = () => {
     isFollowing: boolean;
   }) => {
     const isFollowing = user.isFollowing;
-    //   const { mutate: followMutate } = useFollowUser(user._id);
 
     return (
       <div
         key={user._id}
         className="flex justify-between items-center w-full px-4 py-3 hover:bg-gray-800 transition"
       >
-        
         <div
           className="flex gap-3 items-center cursor-pointer"
           onClick={() => navigate(`/${user.username}`)}
@@ -52,7 +53,7 @@ const Social = () => {
         </div>
         {myProfile?.account?.username !== user.username && (
           <button
-            //   onClick={() => followMutate()}
+            onClick={() => followMutate(user._id)}
             className={`text-sm px-4 py-1 rounded-full border ${
               isFollowing
                 ? "text-white border-gray-500 hover:bg-red-600"
@@ -68,10 +69,12 @@ const Social = () => {
 
   return (
     <div className="flex flex-col">
-        
       <div className="flex px-4 py-4">
-      <div>
-          <button onClick={()=> navigate(`/${username}`)} className="rounded-full p-2 hover:bg-gray-700 ">
+        <div>
+          <button
+            onClick={() => navigate(`/${username}`)}
+            className="rounded-full p-2 hover:bg-gray-700 "
+          >
             <svg
               width="20"
               height="20"
@@ -97,11 +100,10 @@ const Social = () => {
           </button>
         </div>
         <div>
-
-        <h1 className="text-xl font-bold text-white">
-          {myProfile?.firstName} {myProfile?.lastName}
-        </h1>
-        <p className="text-sm text-gray-500">@{username}</p>
+          <h1 className="text-xl font-bold text-white">
+            {myProfile?.firstName} {myProfile?.lastName}
+          </h1>
+          <p className="text-sm text-gray-500">@{username}</p>
         </div>
       </div>
 

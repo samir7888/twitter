@@ -12,15 +12,18 @@ import {
   useFollowUser,
   useGetUserFollowerList,
 } from "@/hooks/follow/useFollow";
-import { useGetUserPost, useGetUserProfile } from "@/hooks/profile/useGetUserProfile";
+import {
+  useGetUserPost,
+  useGetUserProfile,
+} from "@/hooks/profile/useGetUserProfile";
 import { Post } from "@/types/post";
 import { PostCard } from "@/components/home/PostCard";
 
 const Me = () => {
   const { data } = useGetMyProfile();
   const { username } = useParams<{ username: string }>();
-  const { data: userData } = useGetUserProfile(username || '');
-  const {data:userPosts}  = useGetUserPost(username || '');
+  const { data: userData } = useGetUserProfile(username || "");
+  const { data: userPosts } = useGetUserPost(username || "");
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("tweets");
   const navigate = useNavigate();
@@ -63,13 +66,13 @@ const Me = () => {
     { id: "media", label: "Media" },
     { id: "likes", label: "Likes" },
   ];
-  const { mutate: followTheUser } = useFollowUser(userData?.account._id || "");
+  const { mutate: followTheUser } = useFollowUser();
   const { data: followersList } = useGetUserFollowerList(username || "");
   return (
     <div className="w-full min-h-full bg-black">
       {/* Header with back button */}
       <div
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/home")}
         className="flex justify-between sticky top-0 z-10 backdrop-blur-md bg-black dark:bg-black/70 p-4  items-center"
       >
         <div className="flex items-center gap-6">
@@ -149,14 +152,15 @@ const Me = () => {
           )}
           {data && !(user?.user.username === username) && (
             <div className="flex justify-end w-full pt-3">
-              <Button className="bg-white text-black hover:text-white"
+              <Button
+                className="bg-white text-black hover:text-white"
                 variant="default"
                 onClick={() => {
-                  followTheUser();
+                  followTheUser(userData?.account._id || "");
                 }}
               >
-                {followersList && followersList?.followers?.length > 0
-                  ? followersList?.followers?.map((follower) => {
+                {followersList && followersList.length > 0
+                  ? followersList.map((follower) => {
                       return follower.username === user?.user.username
                         ? "Unfollow"
                         : "Follow";
@@ -193,9 +197,18 @@ const Me = () => {
         </div>
 
         <div className="flex gap-5 mt-3 text-sm">
-          <button onClick={()=> navigate(`/${username}/${data && user?.user.username === username
-                ? "following"
-                : "followers"}`)}  className="hover:underline">
+          <button
+            onClick={() =>
+              navigate(
+                `/${username}/${
+                  data && user?.user.username === username
+                    ? "following"
+                    : "followers"
+                }`
+              )
+            }
+            className="hover:underline"
+          >
             <span className="font-bold text-white dark:text-white">
               {data?.followingCount ?? 0}
             </span>{" "}
@@ -205,9 +218,18 @@ const Me = () => {
                 : "Followers"}
             </span>
           </button>
-          <button  onClick={()=> navigate(`/${username}/${data && user?.user.username === username
-                ? "followers"
-                : "following"}`)} className="hover:underline">
+          <button
+            onClick={() =>
+              navigate(
+                `/${username}/${
+                  data && user?.user.username === username
+                    ? "followers"
+                    : "following"
+                }`
+              )
+            }
+            className="hover:underline"
+          >
             <span className="font-bold text-white dark:text-white">
               {data?.followersCount ?? 0}
             </span>{" "}
@@ -238,24 +260,21 @@ const Me = () => {
       </div>
 
       {/* Tweets */}
-      <div className="min-h-40 flex justify-start items-center text-center text-gray-500">
-
-{
-data && !(user?.user.username === username) ? 
-(activeTab === "tweets" &&
-  (userPosts?.posts?.length > 0 ? (
-    userPosts?.posts.map((post: Post) => {
-      return <PostCard post={post} key={post._id} />;
-    })
-  ) : (
-    <div className="text-center text-gray-500">No posts found</div>
-  ))
-) : (
-  activeTab === "tweets" && <Path />
-)}
+      <div className="flex flex-col divide-y divide-gray-600">
+        {data && !(user?.user.username === username)
+          ? activeTab === "tweets" &&
+            (userPosts?.posts?.length > 0 ? (
+              userPosts?.posts.map((post: Post) => {
+                return <PostCard post={post} key={post._id} />;
+                
+              })
+            ) : (
+              <div className="text-center text-gray-500">No posts found</div>
+            ))
+          : activeTab === "tweets" && <Path />}
 
         {activeTab === "replies" && (
-          <div>
+          <div className="text-center">
             <p className="text-xl font-bold text-white dark:text-white mb-1">
               Join the conversation
             </p>
@@ -264,7 +283,7 @@ data && !(user?.user.username === username) ?
         )}
 
         {activeTab === "media" && (
-          <div>
+          <div className="text-center">
             <p className="text-xl font-bold text-white dark:text-white mb-1">
               Lights, camera... attachment!
             </p>
@@ -273,7 +292,7 @@ data && !(user?.user.username === username) ?
         )}
 
         {activeTab === "likes" && (
-          <div>
+          <div className="text-center">
             <p className="text-xl font-bold text-white dark:text-white mb-1">
               You haven't liked any posts yet
             </p>
