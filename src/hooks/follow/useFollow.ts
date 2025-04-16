@@ -40,7 +40,7 @@ export const useGetUserFollowerList = (username: string) => {
       if (res.status !== 200) {
         throw new Error('Network response was not ok')
       }
-      return res.data.data
+      return res.data.data.followers;
     },
 
   })
@@ -56,7 +56,7 @@ export const useGetUserFollowingList = (username: string) => {
       if (res.status !== 200) {
         throw new Error('Network response was not ok')
       }
-      return res.data.data
+      return res.data.data.following;
     },
 
   })

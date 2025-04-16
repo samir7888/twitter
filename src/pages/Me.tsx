@@ -193,7 +193,9 @@ const Me = () => {
         </div>
 
         <div className="flex gap-5 mt-3 text-sm">
-          <button className="hover:underline">
+          <button onClick={()=> navigate(`/${username}/${data && user?.user.username === username
+                ? "following"
+                : "followers"}`)}  className="hover:underline">
             <span className="font-bold text-white dark:text-white">
               {data?.followingCount ?? 0}
             </span>{" "}
@@ -203,7 +205,9 @@ const Me = () => {
                 : "Followers"}
             </span>
           </button>
-          <button className="hover:underline">
+          <button  onClick={()=> navigate(`/${username}/${data && user?.user.username === username
+                ? "followers"
+                : "following"}`)} className="hover:underline">
             <span className="font-bold text-white dark:text-white">
               {data?.followersCount ?? 0}
             </span>{" "}

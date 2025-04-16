@@ -7,6 +7,7 @@ import Me from "./pages/Me";
 import Persist from "./lib/Persist";
 import { RegisterPage } from "./pages/RegisterPage";
 import SinglePost from "./components/home/SinglePost";
+import Social from "./pages/Social";
 
 // ✅ Public Routes
 const publicRoutes = [
@@ -46,6 +47,7 @@ const protectedRoutes = [
     children: [
       { index: true, element: <Me /> },
       { path: "status/:postId", element: <SinglePost /> },
+      { path: ":tab", element: <Social /> },
     ],
   },
   {
