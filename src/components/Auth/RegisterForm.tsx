@@ -3,48 +3,46 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { BASEURL } from "@/lib/constant";
-// import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { UserApiResponse } from "@/types/user";
-import { userSchema } from "@/validations/user-validation/registerValidation";
+import {
+  registerInputType,
+  userSchema,
+} from "@/validations/user-validation/registerValidation";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const RegisterForm = () => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [role, setRole] = React.useState("ADMIN");
-  const [email, setEmail] = React.useState("");
   const [error, setError] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  // const { setUser } = useAuth();
   const navigate = useNavigate();
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<registerInputType>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      role: "USER", // Changed default to USER as it's likely more common
+      username: "",
+    },
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
+  const onSubmit: SubmitHandler<registerInputType> = async (data) => {
     setError("");
-
-    const validationResult = userSchema.safeParse({
-      email,
-      password,
-      role,
-      username,
-    });
-
-    if (!validationResult.success) {
-      const firstError = Object.values(validationResult.error.flatten().fieldErrors)[0]?.[0];
-      setError(firstError || "Invalid input. Please check your form.");
-      setLoading(false);
-      return;
-    }
 
     try {
       await axios.post<UserApiResponse>(`${BASEURL}/users/register`, {
-        email,
-        password,
-        role,
-        username,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+        username: data.username,
       });
 
+      // Show success message before navigation (optional)
+      alert("Registration successful! Please log in.");
       navigate("/login", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -53,71 +51,100 @@ export const RegisterForm = () => {
           error.response?.data?.message
         );
         setError(
-          error.response?.data?.message || "Invalid username or password"
+          error.response?.data?.message || "Registration failed. Please try again."
         );
       } else {
         console.error("Unexpected error:", error);
         setError("Something went wrong. Please try again.");
       }
-    } finally {
-      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="h-full w-full">
       <h1 className="text-3xl mb-4 font-bold">Happening now</h1>
-      <h3>Join today.</h3>
+      <h3 className="text-lg mb-6">Create your account today</h3>
 
       <div className="p-3 w-full">
-        <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit}>
-          <Input
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            type="email"
-            placeholder="Email"
-            className="p-2 border border-gray-300 rounded"
-            required
-          />
+        <form
+          className="flex flex-col gap-4 mt-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div>
+            <Input
+              {...register("email")}
+              type="email"
+              placeholder="Email"
+              className="p-2 border border-gray-300 rounded bg-transparent text-white"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
+          </div>
 
-          <Input
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            type="text"
-            placeholder="Username"
-            className="p-2 border border-gray-300 rounded"
-            required
-          />
+          <div>
+            <Input
+              {...register("username")}
+              type="text"
+              placeholder="Username"
+              className="p-2 border border-gray-300 rounded bg-transparent text-white"
+            />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
 
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            type="password"
-            placeholder="Password"
-            className="p-2 border border-gray-300 rounded"
-            required
-          />
+          <div>
+            <Input
+              {...register("password")}
+              type="password"
+              placeholder="Password"
+              className="p-2 border border-gray-300 rounded bg-transparent text-white"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-          <select
-            className="bg-black text-white p-2 rounded border border-gray-300"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="ADMIN">Admin</option>
-            <option value="USER">User</option>
-            <option value="MODERATOR">Moderator</option>
-            <option value="GUEST">Guest</option>
-          </select>
+          <div>
+            <select 
+              {...register("role")}
+              className="w-full p-2 border border-gray-300 rounded bg-black text-white"
+            >
+              <option value="USER" className="bg-black text-white">User</option>
+              <option value="ADMIN" className="bg-black text-white">Admin</option>
+              <option value="MODERATOR" className="bg-black text-white">Moderator</option>
+              <option value="GUEST" className="bg-black text-white">Guest</option>
+            </select>
+            {errors.role && (
+              <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
+            )}
+          </div>
 
           <Button
             type="submit"
-            disabled={loading}
-            className="bg-blue-500 text-white p-2 rounded"
+            disabled={isSubmitting}
+            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors mt-2"
           >
-            {loading ? "Signing up..." : "Sign up"}
+            {isSubmitting ? "Creating account..." : "Create account"}
           </Button>
 
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2">
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
+          
+          <p className="text-sm text-gray-400 mt-4">
+            Already have an account?{" "}
+            <a href="/login" className="text-blue-500 hover:underline">
+              Sign in
+            </a>
+          </p>
         </form>
       </div>
     </div>
