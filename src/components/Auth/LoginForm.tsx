@@ -6,43 +6,44 @@ import { BASEURL } from "@/lib/constant";
 import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { AuthResponse } from "@/types/loginTypes";
-import { loginSchema } from "@/validations/user-validation/loginValidation";
+import { loginInputTypes, loginSchema } from "@/validations/user-validation/loginValidation";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<loginInputTypes>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    }
+  });
+  
   const [error, setError] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [rememberMe, setRememberMe] = React.useState<boolean>(false);
+  const [rememberMe, setRememberMe] = React.useState<boolean>(
+    localStorage.getItem("rememberMe") === "true"
+  );
+  
   const { setAccessToken, setUser } = useAuth();
   const navigate = useNavigate();
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
 
-const validationResult = loginSchema.safeParse({
-  username,
-  password
-});
-if (!validationResult.success) {
-  const firstError = Object.values(validationResult.error.flatten().fieldErrors)[0]?.[0];
-  setError(firstError || "Invalid input. Please check your form.");
-  setLoading(false);
-  return;
-}
+  const onSubmit: SubmitHandler<loginInputTypes> = async (data) => {
+    setError("");
 
     try {
       const res = await axios.post<AuthResponse>(`${BASEURL}/users/login`, {
-        username,
-        password,
+        username: data.username,
+        password: data.password,
       });
    
       setAccessToken(res.data.data.accessToken);
       setUser(res.data.data);
-
       
-      localStorage.setItem('username',res.data.data.user.username)
+      localStorage.setItem('username', res.data.data.user.username);
       navigate("/home", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -54,18 +55,21 @@ if (!validationResult.success) {
         console.error("Unexpected error:", error);
         setError("Something went wrong. Please try again.");
       }
-    } finally {
-
-      setLoading(false);
     }
-  }
+  };
+
+  const handleRememberMeChange = () => {
+    const newValue = !rememberMe;
+    setRememberMe(newValue);
+    localStorage.setItem("rememberMe", newValue ? "true" : "false");
+  };
 
   return (
     <div className="h-full w-full">
       <h1 className="text-3xl mb-4 font-bold">Happening now</h1>
       <h3>Join today.</h3>
 
-      <div className=" p-3 w-full">
+      <div className="p-3 w-full">
         <Button className="bg-white text-gray-600 p-2 rounded-full">
           Login with Google
         </Button>
@@ -83,41 +87,53 @@ if (!validationResult.success) {
           <div className="h-[1px] w-full bg-white" />
         </div>
 
-        <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit}>
-          <Input
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            size={10}
-            type="text"
-            placeholder="Username"
-            className="p-2 border border-gray-300 rounded"
-          />
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            type="password"
-            placeholder="Password"
-            className="p-2 border border-gray-300 rounded"
-          />
+        <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <Input
+              {...register("username")}
+              type="text"
+              placeholder="Username"
+              className="p-2 border border-gray-300 rounded"
+            />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+            )}
+          </div>
+          
+          <div>
+            <Input
+              {...register("password")}
+              type="password"
+              placeholder="Password"
+              className="p-2 border border-gray-300 rounded"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
+          </div>
+          
           <Button
             type="submit"
-            disabled={loading}
+            disabled={isSubmitting}
             className="bg-blue-500 text-white p-2 rounded"
           >
-            {loading ? "Logging in..." : "Login"}
+            {isSubmitting ? "Logging in..." : "Login"}
           </Button>
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          
+          <div className="flex items-center mt-2">
+            <Input 
+              type="checkbox" 
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+              className="w-4 h-4 mr-2" 
+            />
+            <label htmlFor="rememberMe" className="text-white">Remember me</label>
+          </div>
         </form>
-        
       </div>
-          <div className="flex w-56  items-center justify-center text-center mt-4">
-          <Input onChange={()=>{
-            setRememberMe(!rememberMe);
-            localStorage.setItem("rememberMe", !rememberMe ? "true" : "false");
-          }}  type="checkbox" className=" w-20" />
-          <span className="text-xl flex  text-white">Remember me</span>
-        </div>
     </div>
   );
 };
