@@ -6,15 +6,16 @@ import { SidebarLayout } from "../common/Sidebar";
 const HomeLayout = () => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen w-full flex bg-black text-white">
+      <div className="min-h-screen relative w-full flex bg-black text-white">
         {/* Sidebar */}
-        <aside className="flex h-screen sticky top-0">
+        <aside className="flex h-screen sticky top-0 ">
           <SidebarLayout />
         </aside>
 
         {/* Mobile menu trigger - only visible on small screens */}
-        <div className="md:hidden fixed top-4 left-4 z-50">
+        <div className="md:hidden fixed top-1 left-0 z-50">
           <SidebarTrigger>
+        
             <button className="p-2 rounded-full bg-black text-white hover:bg-gray-800">
               <Menu size={24} />
             </button>
@@ -23,7 +24,7 @@ const HomeLayout = () => {
 
         {/* Main content */}
         <main className="flex-1 min-h-screen border-l border-gray-800">
-          <div className="max-w-2xl mx-auto px-4">
+          <div className="max-w-2xl mx-auto  md:px-4">
             <Outlet />
           </div>
         </main>

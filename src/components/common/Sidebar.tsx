@@ -1,8 +1,6 @@
 import {
-    Calendar,
     Home,
     Inbox,
-    Search,
     Settings,
     User,
     Twitter,
@@ -20,9 +18,7 @@ import {
   const menuItems = [
     { url: "/home", icon: Home, label: "Home" },
     { url: `/${localStorage.getItem("username")}`, icon: User, label: "Profile" },
-    { url: "/search", icon: Search, label: "Explore" },
     { url: "/inbox", icon: Inbox, label: "Messages" },
-    { url: "/calendar", icon: Calendar, label: "Calendar" },
     { url: "/settings", icon: Settings, label: "Settings" },
   ];
   

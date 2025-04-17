@@ -5,6 +5,7 @@ import { useUpdateCoverImage } from "@/hooks/profile/useUpdateCoverImage";
 // import { useUpdateProfileImage } from "@/hooks/profile/useUpdateProfileImage";
 import { UserProfile } from "@/types/userProfile";
 import { useUpdateProfile } from "@/hooks/profile/useUpdateAvatar";
+import { profileFormSchema } from "@/validations/input-validations/profileInput";
 
 export default function ProfileEditModal({
   isOpen,
@@ -17,7 +18,7 @@ export default function ProfileEditModal({
 }) {
   const coverImageInputRef = useRef<HTMLInputElement>(null);
   const profileImageInputRef = useRef<HTMLInputElement>(null);
-
+  const [error,setError] = useState("");
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
@@ -74,6 +75,7 @@ export default function ProfileEditModal({
 
   // Form data interface
   interface FormData {
+
     firstName: string;
     lastName: string;
     bio: string;
@@ -91,7 +93,8 @@ export default function ProfileEditModal({
     { code: "+86", name: "China (+86)" },
     { code: "+49", name: "Germany (+49)" },
   ];
-
+ 
+  
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -143,25 +146,33 @@ export default function ProfileEditModal({
     // Prepare and upload file
     const formData = new FormData();
     formData.append('coverImage', file);
-    updateProfileImageMutate({ params: formData });
+    updateProfileImageMutate();
   };
 
 
   
   const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    updateProfileMutate({ params: formData });
-    
-    // Close modal on success
-    if (isProfileUpdateSuccess  && 
-        (!coverImagePreview || isCoverUpdateSuccess)) {
-      setIsOpen(false);
+  
+    const validationResult = profileFormSchema.safeParse(formData);
+  
+    if (!validationResult.success) {
+      const firstError = Object.values(validationResult.error.flatten().fieldErrors)[0]?.[0];
+      setError(firstError || "Invalid input.");
+      return;
     }
-    if (isProfileUpdateSuccess  && 
-        (!profileImagePreview || isProfileUpdateSuccess)) {
+  
+    updateProfileMutate({ params: formData });
+  
+    if (
+      isProfileUpdateSuccess &&
+      (!coverImagePreview || isCoverUpdateSuccess) &&
+      (!profileImagePreview || isProfileUpdateSuccess)
+    ) {
       setIsOpen(false);
     }
   };
+  
 
   // If the modal is not open, don't render anything
   if (!isOpen) return null;
@@ -183,7 +194,7 @@ export default function ProfileEditModal({
   const errorMessage = profileUpdateError?.message || coverUpdateError?.message ;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 font-sans">
+    <div className="fixed  inset-0 flex items-center justify-center z-50 font-sans">
       {/* Semi-transparent background */}
       <div
         className="fixed inset-0 bg-black "
@@ -193,7 +204,7 @@ export default function ProfileEditModal({
       {/* Modal Content */}
       <div className="bg-black opacity-80 border rounded-2xl w-full max-w-md mx-4 z-10">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b overflow-auto">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setIsOpen(false)}
@@ -212,14 +223,14 @@ export default function ProfileEditModal({
         </div>
 
         {/* Error message display */}
-        {hasError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4">
-            <span className="block sm:inline">{errorMessage || "An error occurred while saving your profile."}</span>
+        {(error || hasError) && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative ">
+            <span className="block sm:inline">{error || errorMessage || "An error occurred while saving your profile."}</span>
           </div>
         )}
 
         {/* Form */}
-        <form className="p-4 space-y-4">
+        <form className="px-4 py-1 space-y-4">
           <div className="my-6">
             <div className="h-28 relative lg:h-32 bg-black dark:bg-gray-800 overflow-hidden">
               {/* Cover Image */}
