@@ -6,6 +6,7 @@ import { BASEURL } from "@/lib/constant";
 import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { AuthResponse } from "@/types/loginTypes";
+import { loginSchema } from "@/validations/user-validation/loginValidation";
 
 const LoginForm = () => {
   const [username, setUsername] = React.useState("");
@@ -19,6 +20,17 @@ const LoginForm = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+const validationResult = loginSchema.safeParse({
+  username,
+  password
+});
+if (!validationResult.success) {
+  const firstError = Object.values(validationResult.error.flatten().fieldErrors)[0]?.[0];
+  setError(firstError || "Invalid input. Please check your form.");
+  setLoading(false);
+  return;
+}
 
     try {
       const res = await axios.post<AuthResponse>(`${BASEURL}/users/login`, {

@@ -32,7 +32,6 @@ export const PostCard = ({ post }: { post: Post }) => {
     images,
     author,
   } = post;
-console.log(post)
   const { mutate } = useDeletePost();
   const { mutate: followTheUser } = useFollowUser();
   const { data: followersList } = useGetUserFollowerList(
@@ -120,8 +119,8 @@ console.log(post)
                       followTheUser(author?.account?._id);
                     }}
                   >
-                    {followersList && followersList?.followers?.length > 0
-                      ? followersList?.followers?.map((follower) => {
+                    {followersList && followersList?.length > 0
+                      ? followersList?.map((follower) => {
                           return follower.username === user?.user.username
                             ? "Unfollow"
                             : "Follow";
