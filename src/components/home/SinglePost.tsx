@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetSinglePost } from "@/hooks/posts/getSinglePost";
 
 import { Button } from "../ui/button";
@@ -19,11 +19,10 @@ const SinglePost = () => {
   const { data: commentsData } = useGetPostComment();
   const { mutate } = useCommentPost();
   const { mutate: likeTheComment } = useLikeComment();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
   if (!data) {
     return;
   }
+  
   return (
     <div className="flex flex-col gap-4 p-4">
       <PostCard post={data} />
@@ -44,7 +43,13 @@ const SinglePost = () => {
         <div>
           <Button
             onClick={() => {
-              mutate({ comment });
+              try {
+                mutate({ comment });
+              } catch (error) {
+                console.log(error)
+              }finally{
+                setComment('')
+              }
             }}
             className="bg-blue-500  text-white rounded-full p-5"
           >
