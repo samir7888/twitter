@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useGetSinglePost } from "@/hooks/posts/getSinglePost";
 
 import { Button } from "../ui/button";
-import { PostCard } from "./PostCard";
 import { useState } from "react";
 import {
   useCommentPost,
@@ -11,6 +10,7 @@ import {
 } from "@/hooks/posts/commentPost";
 import { formatDate } from "@/lib/TimeFormat";
 import { Heart } from "lucide-react";
+import { PostCard } from "./PostCard";
 
 const SinglePost = () => {
   const { postId } = useParams();

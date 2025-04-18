@@ -1,7 +1,8 @@
 import { useGetMyPost } from '@/hooks/posts/useGetMyPost'
 
-import { PostCard } from './PostCard';
+
 import { Post } from '@/types/post';
+import { PostCard } from './PostCard';
 
 const Path = () => {
     const {data,isPending} = useGetMyPost();
