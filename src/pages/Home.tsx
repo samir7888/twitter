@@ -1,4 +1,4 @@
-import { Posts } from "../components/home/Posts";
+import Posts from "../components/home/Posts";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 import { useUploadPost } from "@/hooks/posts/useUploadPost";
@@ -15,11 +15,10 @@ const Home = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useUploadPost();
-const {user} = useAuth();
-const username = user?.user.username || "User";
+  const { user } = useAuth();
+  const username = user?.user.username || "User";
   // Auto-resize textarea as content grows
   useEffect(() => {
-    
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -221,7 +220,6 @@ const username = user?.user.username || "User";
                   onChange={handleFileChange}
                 />
 
-                
                 {/* Status indicator showing count of images/tags */}
                 {(images.length > 0 || tags.length > 0) && (
                   <span className="text-sm text-gray-500 dark:text-gray-400">
