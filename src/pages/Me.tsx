@@ -1,12 +1,13 @@
+import { PostCard } from "../components/home/PostCard";
 import { Button } from "@/components/ui/button";
 import { useGetMyProfile } from "@/hooks/profile/getMyProfile";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CalendarIcon, MapPinIcon } from "lucide-react";
 import { useState, useEffect } from "react";
-import ProfileEditModal from "@/components/Home/UpdateProfile";
+import ProfileEditModal from "@/components/home/UpdateProfile";
 import Logout from "@/components/Auth/Logout";
 import { UserProfile } from "@/types/userProfile";
-import Path from "@/components/Home/Path";
+import Path from "@/components/home/Path";
 import { useAuth } from "@/context/AuthProvider";
 import {
   useFollowUser,
@@ -17,7 +18,7 @@ import {
   useGetUserProfile,
 } from "@/hooks/profile/useGetUserProfile";
 import { Post } from "@/types/post";
-import { PostCard } from "@/components/Home/PostCard";
+// import { PostCard } from "@/components/home/PostCard";
 
 const Me = () => {
   const { data } = useGetMyProfile();

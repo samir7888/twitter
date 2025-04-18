@@ -6,7 +6,7 @@ import HomeLayout from "./components/layout/HomeLayout";
 import Me from "./pages/Me";
 import Persist from "./lib/Persist";
 import { RegisterPage } from "./pages/RegisterPage";
-import SinglePost from "./components/Home/SinglePost";
+import SinglePost from "./components/home/SinglePost";
 import Social from "./pages/Social";
 
 // ✅ Public Routes

@@ -1,7 +1,8 @@
 
 import { useInfinitePosts } from "@/hooks/posts/getAllPosts";
-import { PostCard } from "./PostCard";
+
 import { useEffect, useRef } from "react";
+import { PostCard } from "./PostCard";
 
 export const Posts = () => {
   const {
