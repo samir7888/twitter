@@ -2,22 +2,22 @@ export interface IAvatar {
     _id: string;
     localPath: string;
     url: string;
-}
-
-export interface IAccount {
+  }
+  
+  export interface IAccount {
     _id: string;
     avatar: IAvatar;
     email: string;
     username: string;
-}
-
-export interface ICoverImage {
+  }
+  
+  export interface ICoverImage {
     _id: string;
     localPath: string;
     url: string;
-}
-
-export interface IAuthor {
+  }
+  
+  export interface IAuthor {
     __v: number;
     _id: string;
     account: IAccount;
@@ -32,15 +32,15 @@ export interface IAuthor {
     owner: string;
     phoneNumber: string;
     updatedAt: string;
-}
-
-export interface IPostImage {
+  }
+  
+  export interface IPostImage {
     _id: string;
     localPath: string;
     url: string;
-}
-
-export interface Post {
+  }
+  
+  export interface Post {
     __v: number;
     _id: string;
     author: IAuthor;
@@ -54,28 +54,36 @@ export interface Post {
     likes: number;
     tags: string[];
     updatedAt: string;
-}
-
-export interface IPostsResponse {
+  }
+  
+  export interface IPostsResponse {
     hasNextPage: boolean;
     hasPrevPage: boolean;
     limit: number;
     nextPage: number;
     page: number;
     posts: Post[];
-}
-
-
-export interface IPostsApiResponse {
+  }
+  
+  export interface IPostsApiResponse {
     data: IPostsResponse;
     message: string;
     statusCode: number;
     success: boolean;
-}
-export interface IPostApiResponse {
+  }
+  
+  export interface IPostApiResponse {
     data: Post;
     message: string;
     statusCode: number;
     success: boolean;
-}
-
+  }
+  
+  // Infinite query helper types
+  export type IPostPage = IPostsResponse;
+  
+  export type InfinitePostsPages = {
+    pages: IPostsApiResponse[];
+    pageParams: unknown[];
+  };
+  

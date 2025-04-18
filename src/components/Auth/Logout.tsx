@@ -1,5 +1,4 @@
 import useAxiosAuth from '@/hooks/useAuth';
-import React from 'react'
 import { Button } from '../ui/button';
 
 const Logout = () => {

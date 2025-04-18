@@ -2,9 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { X, Camera } from "lucide-react";
 import { useUpdateMyProfile } from "@/hooks/profile/useUpdateProfile";
 import { useUpdateCoverImage } from "@/hooks/profile/useUpdateCoverImage";
-// import { useUpdateProfileImage } from "@/hooks/profile/useUpdateProfileImage";
-import { UserProfile } from "@/types/userProfile";
 import { useUpdateProfile } from "@/hooks/profile/useUpdateAvatar";
+import { UserProfile } from "@/types/userProfile";
 import { profileFormSchema } from "@/validations/input-validations/profileInput";
 
 export default function ProfileEditModal({
@@ -18,7 +17,30 @@ export default function ProfileEditModal({
 }) {
   const coverImageInputRef = useRef<HTMLInputElement>(null);
   const profileImageInputRef = useRef<HTMLInputElement>(null);
-  const [error,setError] = useState("");
+  const [error, setError] = useState("");
+  
+  // Form data interface
+  interface FormData {
+    firstName: string;
+    lastName: string;
+    bio: string;
+    dob: string;
+    location: string;
+    phoneNumber: string;
+    countryCode: string;
+  }
+
+  // Form data state
+  const [formData, setFormData] = useState<FormData>({
+    firstName: initialValues?.firstName || "",
+    lastName: initialValues?.lastName || "",
+    bio: initialValues?.bio || "",
+    dob: initialValues?.dob || "",
+    location: initialValues?.location || "",
+    phoneNumber: initialValues?.phoneNumber || "",
+    countryCode: initialValues?.countryCode || "+1",
+  });
+
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
@@ -27,10 +49,16 @@ export default function ProfileEditModal({
         lastName: initialValues?.lastName || "",
         bio: initialValues?.bio || "",
         dob: initialValues?.dob || "",
-        location: initialValues.location || "",
+        location: initialValues?.location || "",
         phoneNumber: initialValues?.phoneNumber || "",
         countryCode: initialValues?.countryCode || "+1",
       });
+      // Reset previews and errors when modal opens
+      setCoverImagePreview(null);
+      setProfileImagePreview(null);
+      setCoverImageFile(null);
+      setProfileImageFile(null);
+      setError("");
     }
   }, [isOpen, initialValues]);
 
@@ -54,36 +82,19 @@ export default function ProfileEditModal({
 
   // Profile image update mutation
   const { 
-    mutate: updateProfileImageMutate, 
-  
+    mutate: updateProfileImageMutate,
+    isPending: isProfileImageUpdatePending,
+    isError: isProfileImageUpdateError,
+    error: profileImageUpdateError,
+    isSuccess: isProfileImageUpdateSuccess
   } = useUpdateProfile();
-
-  // Form data state
-  const [formData, setFormData] = useState<FormData>({
-    firstName: initialValues?.firstName || "",
-    lastName: initialValues?.lastName || "",
-    bio: initialValues?.bio || "",
-    dob: initialValues?.dob || "",
-    location: initialValues.location || "",
-    phoneNumber: initialValues?.phoneNumber || "",
-    countryCode: initialValues?.countryCode || "+1",
-  });
 
   // Preview states for images
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
-
-  // Form data interface
-  interface FormData {
-
-    firstName: string;
-    lastName: string;
-    bio: string;
-    dob: string;
-    location: string;
-    phoneNumber: string;
-    countryCode: string;
-  }
+  // File states for submission
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
   const countryCodes = [
     { code: "+1", name: "United States (+1)" },
@@ -94,7 +105,6 @@ export default function ProfileEditModal({
     { code: "+49", name: "Germany (+49)" },
   ];
  
-  
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -110,15 +120,17 @@ export default function ProfileEditModal({
   const handleCoverImageClick = () => {
     coverImageInputRef.current?.click();
   };
+
   const handleProfileImageClick = () => {
     profileImageInputRef.current?.click();
   };
 
-
-
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Store file for submission
+    setCoverImageFile(file);
     
     // Create a preview
     const reader = new FileReader();
@@ -126,15 +138,14 @@ export default function ProfileEditModal({
       setCoverImagePreview(reader.result as string);
     };
     reader.readAsDataURL(file);
-    
-    // Prepare and upload file
-    const formData = new FormData();
-    formData.append('coverImage', file);
-    updateCoverImageMutate({ params: formData });
   };
+
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Store file for submission
+    setProfileImageFile(file);
     
     // Create a preview
     const reader = new FileReader();
@@ -142,43 +153,62 @@ export default function ProfileEditModal({
       setProfileImagePreview(reader.result as string);
     };
     reader.readAsDataURL(file);
-    
-    // Prepare and upload file
-    const formData = new FormData();
-    formData.append('coverImage', file);
-    updateProfileImageMutate();
   };
 
-
-  
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-  
-    const validationResult = profileFormSchema.safeParse(formData);
-  
-    if (!validationResult.success) {
-      const firstError = Object.values(validationResult.error.flatten().fieldErrors)[0]?.[0];
-      setError(firstError || "Invalid input.");
-      return;
-    }
-  
-    updateProfileMutate({ params: formData });
-  
-    if (
-      isProfileUpdateSuccess &&
-      (!coverImagePreview || isCoverUpdateSuccess) &&
-      (!profileImagePreview || isProfileUpdateSuccess)
-    ) {
-      setIsOpen(false);
+    setError("");
+    
+    try {
+      // Validate form data
+      const validationResult = profileFormSchema.safeParse(formData);
+    
+      if (!validationResult.success) {
+        const firstError = Object.values(validationResult.error.flatten().fieldErrors)[0]?.[0];
+        setError(firstError || "Invalid input.");
+        return;
+      }
+      
+      // Update profile information
+      updateProfileMutate({ params: formData });
+      
+      // Upload cover image if changed
+      if (coverImageFile) {
+        // Convert File to base64 string since the API expects a string
+        const reader = new FileReader();
+        reader.readAsDataURL(coverImageFile);
+        reader.onload = () => {
+          // Remove the prefix (e.g., "data:image/jpeg;base64,") from the base64 string
+          const base64String = reader.result?.toString().split(',')[1];
+          if (base64String) {
+            updateCoverImageMutate({ params: base64String });
+          }
+        };
+      }
+      
+      // Upload profile image if changed
+      if (profileImageFile) {
+        updateProfileImageMutate();
+      }
+      
+      // Close modal on success after a small delay to ensure mutations complete
+      if (isProfileUpdateSuccess && 
+          (!coverImageFile || isCoverUpdateSuccess) && 
+          (!profileImageFile || isProfileImageUpdateSuccess)) {
+        setTimeout(() => setIsOpen(false), 500);
+      }
+    } catch (err) {
+      setError("Failed to update profile. Please try again.");
+      console.error("Profile update error:", err);
     }
   };
-  
 
   // If the modal is not open, don't render anything
   if (!isOpen) return null;
 
   // Show loading indicator if any operation is pending
-  const isLoading = isProfileUpdatePending || isCoverUpdatePending;
+  const isLoading = isProfileUpdatePending || isCoverUpdatePending || isProfileImageUpdatePending;
+  
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -189,22 +219,34 @@ export default function ProfileEditModal({
     );
   }
 
-  // Show error messages if any
-  const hasError = isProfileUpdateError || isCoverUpdateError ;
-  const errorMessage = profileUpdateError?.message || coverUpdateError?.message ;
+  // Combine error messages if any
+  const hasError = isProfileUpdateError || isCoverUpdateError || isProfileImageUpdateError;
+  const errorMessage = profileUpdateError?.message || coverUpdateError?.message || profileImageUpdateError?.message;
+
+  // Get cover image source
+  const coverImageSrc = coverImagePreview || 
+    (initialValues?.coverImage && typeof initialValues.coverImage === "string" ? 
+      initialValues.coverImage : 
+      "https://picsum.photos/seed/picsum/1500/500");
+
+  // Get profile image source
+  const profileImageSrc = profileImagePreview || 
+    (initialValues?.account?.avatar && typeof initialValues.account.avatar === "string" ? 
+      initialValues.account.avatar : 
+      "https://avatar.iran.liara.run/public");
 
   return (
-    <div className="fixed  inset-0 flex items-center justify-center z-50 font-sans">
+    <div className="fixed inset-0 flex items-center justify-center z-50 font-sans">
       {/* Semi-transparent background */}
       <div
-        className="fixed inset-0 bg-black "
+        className="fixed inset-0 bg-black"
         onClick={() => setIsOpen(false)}
       />
 
       {/* Modal Content */}
-      <div className="bg-black opacity-80 border rounded-2xl w-full max-w-md mx-4 z-10">
+      <div className="bg-black opacity-80 border rounded-2xl w-full max-w-md mx-4 z-10 max-h-screen overflow-y-auto">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b overflow-auto">
+        <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setIsOpen(false)}
@@ -224,7 +266,7 @@ export default function ProfileEditModal({
 
         {/* Error message display */}
         {(error || hasError) && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative ">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
             <span className="block sm:inline">{error || errorMessage || "An error occurred while saving your profile."}</span>
           </div>
         )}
@@ -232,16 +274,16 @@ export default function ProfileEditModal({
         {/* Form */}
         <form className="px-4 py-1 space-y-4">
           <div className="my-6">
-            <div className="h-28 relative lg:h-32 bg-black dark:bg-gray-800 overflow-hidden">
+            <div className="h-28 relative lg:h-32 bg-black overflow-hidden">
               {/* Cover Image */}
               <img
-                src={coverImagePreview || (typeof initialValues?.coverImage === "string" ? initialValues.coverImage : undefined) || "https://picsum.photos/seed/picsum/1500/500"}
+                src={coverImageSrc}
                 alt="cover"
                 className="w-full h-full object-cover"
               />
               <div 
                 onClick={handleCoverImageClick}
-                className="text-black absolute top-12 left-[40%] rounded-full bg-gray-600 p-3 opacity-50 cursor-pointer hover:opacity-70"
+                className="text-black absolute top-12 left-1/2 transform -translate-x-1/2 rounded-full bg-gray-600 p-3 opacity-50 cursor-pointer hover:opacity-70"
               >
                 <Camera />
                 <input
@@ -255,31 +297,31 @@ export default function ProfileEditModal({
             </div>
             {/* Profile Image */}
             <div className="flex justify-between px-4 relative">
-              <div className="absolute -top-14 border-4 border-white dark:border-black rounded-full  ">
+              <div className="absolute -top-14 border-4 border-white dark:border-black rounded-full">
                 <img
-                  src={profileImagePreview || (typeof initialValues.account.avatar === "string" ? initialValues.account.avatar : undefined) || "https://avatar.iran.liara.run/public"}
+                  src={profileImageSrc}
                   alt="profile"
-                  className="max-w-32 max-h-16 rounded-full object-cover"
+                  className="w-24 h-24 rounded-full object-cover"
                 />
                 <div 
                   onClick={handleProfileImageClick}
-                  className="text-white bg-gray-600 opacity-50 p-2 rounded-full absolute top-3 left-3 cursor-pointer hover:opacity-70"
+                  className="text-white bg-gray-600 opacity-50 p-2 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:opacity-70"
                 >
-                  <Camera />
+                  <Camera size={16} />
                   <input
-                  type="file"
-                  ref={profileImageInputRef}
-                  onChange={handleProfileImageChange}
-                  className="hidden"
-                  accept="image/*"
-                />
+                    type="file"
+                    ref={profileImageInputRef}
+                    onChange={handleProfileImageChange}
+                    className="hidden"
+                    accept="image/*"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Name Fields */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 pt-12">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 First Name
@@ -350,7 +392,7 @@ export default function ProfileEditModal({
           </div>
 
           {/* Phone Number with Country Code */}
-          <div>
+          <div className="pb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Phone Number
             </label>

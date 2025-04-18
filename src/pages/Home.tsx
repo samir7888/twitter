@@ -1,9 +1,8 @@
 import { Posts } from "@/components/home/Posts";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
-// import { useAuth } from "@/context/AuthProvider";
 import { useUploadPost } from "@/hooks/posts/useUploadPost";
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
@@ -28,7 +27,11 @@ const username = user?.user.username || "User";
   }, [tweet]);
 
   // Handle file selection
-  const handleFileChange = (e) => {
+  interface FileChangeEvent extends React.ChangeEvent<HTMLInputElement> {
+    target: HTMLInputElement & { files: FileList };
+  }
+
+  const handleFileChange = (e: FileChangeEvent): void => {
     const selectedFiles = Array.from(e.target.files) as File[];
     setImages((prevImages) => [...prevImages, ...selectedFiles]);
   };
@@ -39,12 +42,12 @@ const username = user?.user.username || "User";
   };
 
   // Handle tag input
-  const handleTagInput = (e) => {
+  const handleTagInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setCurrentTag(e.target.value);
   };
 
   // Add tag when Enter key is pressed
-  const handleTagKeyDown = (e) => {
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && currentTag.trim()) {
       e.preventDefault();
       const newTag = currentTag.trim().startsWith("#")

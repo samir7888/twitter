@@ -11,7 +11,6 @@ export const Posts = () => {
     hasNextPage,
     isLoading,
   } = useInfinitePosts();
-
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll observer logic
@@ -33,7 +32,7 @@ export const Posts = () => {
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const allPosts = data?.pages.flatMap((page) => page.posts) || [];
+  const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
 
   return (
     <div className="flex flex-col divide-y divide-gray-600">
