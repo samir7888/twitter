@@ -3,7 +3,7 @@ import { useInfinitePosts } from "@/hooks/posts/getAllPosts";
 import { PostCard } from "./PostCard";
 import { useEffect, useRef } from "react";
 
- const Posts = () => {
+export const Posts = () => {
   const {
     data,
     isFetchingNextPage,
@@ -57,4 +57,3 @@ import { useEffect, useRef } from "react";
     </div>
   );
 };
-export default Posts;

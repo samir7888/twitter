@@ -1,4 +1,5 @@
-import Posts from "../components/home/Posts";
+
+import { Posts } from "@/components/home/Posts";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 import { useUploadPost } from "@/hooks/posts/useUploadPost";
