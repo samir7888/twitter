@@ -1,5 +1,4 @@
-
-import { Posts } from "@/components/home/Posts.tsx";
+import { Posts } from "@/components/Home/Posts";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 import { useUploadPost } from "@/hooks/posts/useUploadPost";

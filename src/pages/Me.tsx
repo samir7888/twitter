@@ -3,10 +3,10 @@ import { useGetMyProfile } from "@/hooks/profile/getMyProfile";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CalendarIcon, MapPinIcon } from "lucide-react";
 import { useState, useEffect } from "react";
-import ProfileEditModal from "@/components/home/UpdateProfile";
+import ProfileEditModal from "@/components/Home/UpdateProfile";
 import Logout from "@/components/Auth/Logout";
 import { UserProfile } from "@/types/userProfile";
-import Path from "@/components/home/Path";
+import Path from "@/components/Home/Path";
 import { useAuth } from "@/context/AuthProvider";
 import {
   useFollowUser,
@@ -17,7 +17,7 @@ import {
   useGetUserProfile,
 } from "@/hooks/profile/useGetUserProfile";
 import { Post } from "@/types/post";
-import { PostCard } from "@/components/home/PostCard";
+import { PostCard } from "@/components/Home/PostCard";
 
 const Me = () => {
   const { data } = useGetMyProfile();
@@ -266,7 +266,6 @@ const Me = () => {
             (userPosts && userPosts?.posts?.length > 0 ? (
               userPosts?.posts.map((post: Post) => {
                 return <PostCard post={post} key={post._id} />;
-                
               })
             ) : (
               <div className="text-center text-gray-500">No posts found</div>
