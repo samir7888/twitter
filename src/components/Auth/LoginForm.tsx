@@ -70,22 +70,8 @@ const LoginForm = () => {
       <h3>Join today.</h3>
 
       <div className="p-3 w-full">
-        <Button className="bg-white text-gray-600 p-2 rounded-full">
-          Login with Google
-        </Button>
-
-        <br />
-        <br />
-
-        <Button className="bg-white text-black p-2 rounded-full hover:text-white">
-          Login with Github
-        </Button>
-
-        <div className="flex items-center justify-center text-center mt-2">
-          <div className="h-[1px] w-full bg-white" />
-          <span className="m-1">or</span>
-          <div className="h-[1px] w-full bg-white" />
-        </div>
+       
+        
 
         <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
