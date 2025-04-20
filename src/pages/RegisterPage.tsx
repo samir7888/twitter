@@ -13,7 +13,7 @@ export const RegisterPage = () => {
             <RegisterForm />
         <div className="flex items-center justify-center text-center mt-4">
           <span>
-            Create a new account ?{" "}
+            Already have an account ?{" "}
             <Link to={"/login"}>
               <span className="text-blue-400 underline">Login</span>
             </Link>{" "}

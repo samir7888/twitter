@@ -41,8 +41,8 @@ export const RegisterForm = () => {
         username: data.username,
       });
 
-      // Show success message before navigation (optional)
-      alert("Registration successful! Please log in.");
+    
+     
       navigate("/login", { replace: true });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -139,12 +139,7 @@ export const RegisterForm = () => {
             </div>
           )}
           
-          <p className="text-sm text-gray-400 mt-4">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-500 hover:underline">
-              Sign in
-            </a>
-          </p>
+          
         </form>
       </div>
     </div>
